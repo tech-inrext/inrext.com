@@ -8,9 +8,6 @@ import WhatsAppButton from "./whatsappbutton/page";
 export const metadata = {
   title: "Inrext",
   description: "Real Estate Platform",
-  icons: {
-    icon: "/images/Inrext logo Icon.png",
-  },
 };
 
 export default function RootLayout({
@@ -38,6 +35,16 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Italianno&display=swap"
           rel="stylesheet"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          href="/images/Inrext%20logo%20Icon.png"
+        />
+        <link
+          rel="shortcut icon"
+          type="image/png"
+          href="/images/Inrext%20logo%20Icon.png"
         />
         {/* Head is now empty; fonts and favicon are in _document.js */}
       </head>
