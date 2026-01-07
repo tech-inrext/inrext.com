@@ -24,7 +24,11 @@ type PasswordResetRequestProps = {
   onOtpSent: (email: string) => void;
 };
 
-const PasswordResetRequest: React.FC<PasswordResetRequestProps> = ({ isDarkMode, onClose, onOtpSent }) => {
+const PasswordResetRequest: React.FC<PasswordResetRequestProps> = ({
+  isDarkMode,
+  onClose,
+  onOtpSent,
+}) => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -106,14 +110,17 @@ const PasswordResetRequest: React.FC<PasswordResetRequestProps> = ({ isDarkMode,
   );
 };
 
-
 type PasswordResetProps = {
   isDarkMode: boolean;
   onClose: () => void;
   initialEmail?: string;
 };
 
-const PasswordReset: React.FC<PasswordResetProps> = ({ isDarkMode, onClose, initialEmail = "" }) => {
+const PasswordReset: React.FC<PasswordResetProps> = ({
+  isDarkMode,
+  onClose,
+  initialEmail = "",
+}) => {
   const [formData, setFormData] = useState({
     email: initialEmail,
     otp: "",
@@ -318,8 +325,6 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ isDarkMode, onClose, init
 // Login Form Component
 // LoginForm removed
 
-
-
 const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -328,7 +333,9 @@ const Header: React.FC = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignUpModalOpen] = useState(false);
   const [passwordResetModalOpen, setPasswordResetModalOpen] = useState(false);
-  const [passwordResetStep, setPasswordResetStep] = useState<'request' | 'reset'>("request");
+  const [passwordResetStep, setPasswordResetStep] = useState<
+    "request" | "reset"
+  >("request");
   const [resetEmail, setResetEmail] = useState("");
   const router = useRouter();
   const pathname = usePathname();
@@ -345,7 +352,6 @@ const Header: React.FC = () => {
     "/careers",
     "/journey",
     "/contact",
-     
   ].includes(pathname);
 
   const isDarkTextPage = [
@@ -353,8 +359,6 @@ const Header: React.FC = () => {
     "/achievements",
     "/careers",
     "/journey",
-     
-   
   ].includes(pathname);
 
   useEffect(() => {
@@ -445,7 +449,9 @@ const Header: React.FC = () => {
               <Link
                 key={item}
                 href={`/${item.toLowerCase()}`}
-                className={`relative text-sm font-semibold transition-colors ${getTextColorClass(pathname === `/${item.toLowerCase()}`)}`}
+                className={`relative text-sm font-semibold transition-colors ${getTextColorClass(
+                  pathname === `/${item.toLowerCase()}`
+                )}`}
               >
                 {item}
               </Link>
@@ -458,7 +464,7 @@ const Header: React.FC = () => {
               src={
                 isDarkMode
                   ? "/images/Inrext white logo png.png"
-                  : "/images/Inrext white logo png.png"
+                  : "/images/Inrext logo.png"
               }
               alt="Inrext Logo"
               className="h-[40px] w-[160px]"
@@ -470,10 +476,10 @@ const Header: React.FC = () => {
             {/* Simple Login Button (desktop) */}
             <button
               type="button"
-              onClick={() => router.push('https://dashboard.inrext.com/')}
-                className={`relative hidden lg:flex text-sm font-semibold cursor-pointer transition-colors ${getTextColorClass(
-                  false
-                )}`}
+              onClick={() => router.push("https://dashboard.inrext.com/")}
+              className={`relative hidden lg:flex text-sm font-semibold cursor-pointer transition-colors ${getTextColorClass(
+                false
+              )}`}
             >
               Login
             </button>
@@ -506,7 +512,6 @@ const Header: React.FC = () => {
       </div>
 
       {/* Login Modal */}
-
 
       {/* Password Reset Modal */}
       <Dialog
@@ -588,35 +593,35 @@ const Header: React.FC = () => {
             </div>
           </div>
 
-            <div className="mt-6">
-              {[
-                "Home",
-                "About",
-                "Properties",
-                "Events",
-                "Achievements",
-                "Careers",
-                "Journey",
-                "Contact",
-              ].map((item) => (
-                <Link
-                  key={item}
-                  href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                  className={`block py-2 px-5 mx-5 rounded-full text-base font-semibold ${
-                    isDarkMode
-                      ? " text-white hover:border hover:border-blue-500"
-                      : "text-gray-900 hover:bg-gray-50"
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item}
-                </Link>
-              ))}
-            </div>
+          <div className="mt-6">
+            {[
+              "Home",
+              "About",
+              "Properties",
+              "Events",
+              "Achievements",
+              "Careers",
+              "Journey",
+              "Contact",
+            ].map((item) => (
+              <Link
+                key={item}
+                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                className={`block py-2 px-5 mx-5 rounded-full text-base font-semibold ${
+                  isDarkMode
+                    ? " text-white hover:border hover:border-blue-500"
+                    : "text-gray-900 hover:bg-gray-50"
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item}
+              </Link>
+            ))}
+          </div>
         </DialogPanel>
       </Dialog>
     </header>
   );
-}
+};
 
 export default Header;

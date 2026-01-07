@@ -20,7 +20,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaTelegram } from "react-icons/fa";
 
-
 // Responsive style helper for Next/SSR
 function responsiveStyles(breakpoints: any) {
   if (typeof window === "undefined") return breakpoints.desktop;
@@ -143,7 +142,6 @@ const settings = {
   ],
 };
 
-
 const Teams: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -156,7 +154,7 @@ const Teams: React.FC = () => {
         const res = await axios.get("/api/pillar?category=growth-navigators");
         setTeamMembers(res.data);
       } catch (error) {
-        console.error("Error fetching Growth-Navigators:", error);
+        // Error fetching Growth-Navigators
       }
     }
     fetchGrowthNavigators();
@@ -165,7 +163,10 @@ const Teams: React.FC = () => {
   // Helper to get correct image src
   function getImageSrc(member: TeamMember): string {
     if (member.image) {
-      if (member.image.startsWith("http://") || member.image.startsWith("https://")) {
+      if (
+        member.image.startsWith("http://") ||
+        member.image.startsWith("https://")
+      ) {
         return member.image;
       }
       return `/images/${member.image.replace(/^\/images\//, "")}`;
@@ -176,7 +177,10 @@ const Teams: React.FC = () => {
       if (typeof img === "object" && (img as any).url) {
         img = (img as any).url;
       }
-      if (typeof img === "string" && (img.startsWith("http://") || img.startsWith("https://"))) {
+      if (
+        typeof img === "string" &&
+        (img.startsWith("http://") || img.startsWith("https://"))
+      ) {
         return img;
       }
       if (typeof img === "string") {
@@ -239,17 +243,25 @@ const Teams: React.FC = () => {
                         <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
                           {member.name}
                         </h1>
-                         <p className={`capitalize text-[0.9rem] ${isDarkMode ? "text-white" : "text-gray-500"}`}>{member.position || member.designation}</p>
+                        <p
+                          className={`capitalize text-[0.9rem] ${
+                            isDarkMode ? "text-white" : "text-gray-500"
+                          }`}
+                        >
+                          {member.position || member.designation}
+                        </p>
 
-                        <Link
-                          href="/about"
+                        <button
+                          type="button"
                           className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
+                          tabIndex={-1}
+                          aria-label="Say Hello"
                         >
                           Say Hello👋{" "}
                           <span className="text-[1.50rem]">
                             <FaTelegram />
                           </span>
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </Link>

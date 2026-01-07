@@ -37,9 +37,6 @@ const PropertyDetails: React.FC = () => {
 
   useEffect(() => {
     if (!name) return;
-    // Log the name and displayName for debugging
-    console.log("URL param name:", name);
-    console.log("Transformed displayName:", displayName);
     // Call API for parent data based on transformed property name
     const fetchData = async () => {
       try {
@@ -50,7 +47,6 @@ const PropertyDetails: React.FC = () => {
           "true",
           "false"
         );
-        console.log("API response:", res);
         let parent = res?.data?.[0] || null;
         // Patch missing required fields for Property type
         if (parent) {

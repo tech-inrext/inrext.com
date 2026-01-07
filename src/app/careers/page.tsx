@@ -7,7 +7,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 
 // Replace Modal import with dynamic import to avoid SSR issues
-const Modal = dynamic(() => import("react-modal").then(mod => mod.default), { ssr: false });
+const Modal = dynamic(() => import("react-modal").then((mod) => mod.default), {
+  ssr: false,
+});
 
 type FormData = {
   name: string;
@@ -37,7 +39,11 @@ const Careers: React.FC = () => {
   // Fix: setAppElement in useEffect (client only)
   useEffect(() => {
     // Only set app element if Modal is loaded and running in the browser
-    if (typeof window !== "undefined" && Modal && (Modal as any).setAppElement) {
+    if (
+      typeof window !== "undefined" &&
+      Modal &&
+      (Modal as any).setAppElement
+    ) {
       (Modal as any).setAppElement("body");
     }
   }, []);
@@ -60,7 +66,6 @@ const Careers: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // Typically send formData to backend here
-    console.log("Form submitted:", formData);
     closeModal();
     setFormData({
       name: "",
@@ -258,7 +263,13 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/3.png" className="w-8 h-8 z-0" alt="" width={32} height={32} />
+              <Image
+                src="/images/3.png"
+                className="w-8 h-8 z-0"
+                alt=""
+                width={32}
+                height={32}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
                 <span className="text-sm relative z-0">Competitive</span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
@@ -274,7 +285,13 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/2.png" className="w-8 h-8 z-0" alt="" width={32} height={32} />
+              <Image
+                src="/images/2.png"
+                className="w-8 h-8 z-0"
+                alt=""
+                width={32}
+                height={32}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
                 <span className="text-sm relative z-0">health and</span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
@@ -290,7 +307,13 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/6.png" className="w-8 h-8 z-0" alt="" width={32} height={32} />
+              <Image
+                src="/images/6.png"
+                className="w-8 h-8 z-0"
+                alt=""
+                width={32}
+                height={32}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
                 <span className="text-sm relative z-0">work life</span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
@@ -306,7 +329,13 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/1.png" className="w-10 h-10 z-0" alt="" width={40} height={40} />
+              <Image
+                src="/images/1.png"
+                className="w-10 h-10 z-0"
+                alt=""
+                width={40}
+                height={40}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
                 <span className="text-sm relative z-0">innovation &</span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
@@ -322,7 +351,13 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/5.png" className="w-8 h-8 z-0" alt="" width={32} height={32} />
+              <Image
+                src="/images/5.png"
+                className="w-8 h-8 z-0"
+                alt=""
+                width={32}
+                height={32}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
                 <span className="text-sm relative z-0">team building</span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
@@ -338,9 +373,17 @@ const Careers: React.FC = () => {
                     : "absolute inset-0 bg-gradient-to-b from-[#51a2ff]  to-[#FFFFFF] to-100% opacity-90"
                 }`}
               ></div>
-              <Image src="/images/4.png" className="w-10 h-10 z-0" alt="" width={40} height={40} />
+              <Image
+                src="/images/4.png"
+                className="w-10 h-10 z-0"
+                alt=""
+                width={40}
+                height={40}
+              />
               <div className="flex flex-col items-center gap-y-[-0.5rem]">
-                <span className="text-sm relative z-0">Professional Growth</span>
+                <span className="text-sm relative z-0">
+                  Professional Growth
+                </span>
                 <span className="text-sm relative z-0 text-blue-500 font-medium">
                   & Training
                 </span>

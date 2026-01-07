@@ -283,7 +283,7 @@ const properties = [
       "Amritsari Express",
       "Kathi Nation & many more",
     ],
-    
+
     amenities: [
       "RCC framed structure ",
       "Structure vetted by IIT Roorkee ",
@@ -396,7 +396,6 @@ const Properties = () => {
   //   { id: 6, url: "/about", img: "/images/dholeraprime.jpg" },
   // ];
 
-  
   function NextArrow(props) {
     const { className, style, onClick } = props;
     return (
@@ -410,20 +409,20 @@ const Properties = () => {
           ...responsiveStyles({
             mobile: {
               marginTop: "2.4rem",
-              right: "1rem"
+              right: "1rem",
             },
             tablet: {
               marginTop: "6.2rem",
-              right: "2.2rem"
+              right: "2.2rem",
             },
             laptop: {
               marginTop: "-8.4rem",
-              right: "1.9rem"
+              right: "1.9rem",
             },
             desktop: {
               marginTop: "6rem",
-              right: "3.1rem"
-            }
+              right: "3.1rem",
+            },
           }),
           zIndex: 1,
         }}
@@ -431,7 +430,7 @@ const Properties = () => {
       />
     );
   }
-  
+
   function PrevArrow(props) {
     const { className, style, onClick } = props;
     return (
@@ -445,20 +444,20 @@ const Properties = () => {
           ...responsiveStyles({
             mobile: {
               marginTop: "2.4rem",
-              left: "18.1rem"
+              left: "18.1rem",
             },
             tablet: {
               marginTop: "6.2rem",
-              left: "42.4rem"
+              left: "42.4rem",
             },
             laptop: {
               marginTop: "-8.4rem",
-              left: "47.9rem"
+              left: "47.9rem",
             },
             desktop: {
               marginTop: "6rem",
-              left: "62.2rem"
-            }
+              left: "62.2rem",
+            },
           }),
           zIndex: 1,
         }}
@@ -469,8 +468,9 @@ const Properties = () => {
 
   // Helper function for responsive styles
   function responsiveStyles(breakpoints) {
+    if (typeof window === "undefined") return breakpoints.desktop;
     const windowWidth = window.innerWidth;
-    
+
     if (windowWidth < 768) {
       return breakpoints.mobile;
     } else if (windowWidth >= 768 && windowWidth < 1024) {
@@ -494,28 +494,27 @@ const Properties = () => {
     prevArrow: <PrevArrow />,
     beforeChange: (oldIndex, newIndex) => setActiveIndex(newIndex),
     responsive: [
-      { 
-        breakpoint: 1024, 
-        settings: { 
-          slidesToShow: 3,
-          centerMode: true // Keep center mode
-        } 
-      },
-      { 
-        breakpoint: 768, 
-        settings: { 
-          slidesToShow: 3,
-          centerMode: true // Keep center mode
-        } 
-      },
-      { 
-        breakpoint: 480, 
-        settings: { 
+      {
+        breakpoint: 1024,
+        settings: {
           slidesToShow: 3,
           centerMode: true, // Keep center mode
-          centerPadding: "0px" // Adjust if needed
-          
-        } 
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          centerMode: true, // Keep center mode
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 3,
+          centerMode: true, // Keep center mode
+          centerPadding: "0px", // Adjust if needed
+        },
       },
     ],
   };
@@ -552,34 +551,36 @@ const Properties = () => {
         </div>
 
         <div className="max-w-6xl mx-auto lg:px-6  pt-2 pb-6">
-          <Slider {...settings} className="py-[2rem] lg:px-[0rem] overflow-hidden">
+          <Slider
+            {...settings}
+            className="py-[2rem] lg:px-[0rem] overflow-hidden"
+          >
             {properties.map((property, index) => (
               <div
                 key={property.name}
                 className="px-0 transition-all duration-500"
                 style={{
-  zIndex:
-    index === activeIndex
-      ? 30
-      : index === activeIndex - 1 || index === activeIndex + 1
-      ? 20
-      : 10,
-}}
-
+                  zIndex:
+                    index === activeIndex
+                      ? 30
+                      : index === activeIndex - 1 || index === activeIndex + 1
+                      ? 20
+                      : 10,
+                }}
               >
                 <div
                   className={`lg:h-[20rem] md:h-[20rem] h-[10rem] lg:w-full md:w-full w-[8.7rem] flex flex-col justify-center items-center px-0 py-0 overflow-hidden lg:rounded-4xl rounded-3xl transition-all duration-500 transform ${
-                    index === activeIndex
-                      ? "scale-95 z-10"
-                      : "scale-90 "
+                    index === activeIndex ? "scale-95 z-10" : "scale-90 "
                   } ${
                     index === activeIndex
                       ? "rotate-0 border-5 border-blue-500"
                       : "rotate-[-5deg] border-5 border-white"
                   }`}
                 >
-                  <Link 
-                    href={`/properties/${encodeURIComponent(property.name.replace(/\s+/g, '-').toLowerCase())}`}
+                  <Link
+                    href={`/properties/${encodeURIComponent(
+                      property.name.replace(/\s+/g, "-").toLowerCase()
+                    )}`}
                     className="w-full h-full hover:scale-110 transition-all duration-500 transform"
                   >
                     <img
