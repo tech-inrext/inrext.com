@@ -1,2 +1,6 @@
-import Teams from "../routes/homePage/Teams";
-export default Teams;
+"use client";
+import HomePage from "./routes/homePage/HomePage"; // default import
+
+export default function Page() {
+  return <HomePage />;
+}
