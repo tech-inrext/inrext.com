@@ -4,6 +4,7 @@ export type TeamMember = {
   _id: string;
   name: string;
   position?: string;
+  designation?: string;
   image?: string;
   profileImages?: string[];
   category?: string;

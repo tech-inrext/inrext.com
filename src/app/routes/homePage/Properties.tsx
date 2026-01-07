@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 // Properties.jsx
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
+import Slider, { CustomArrowProps } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useTheme } from "../../content/ThemeContext";
@@ -396,7 +396,7 @@ const Properties = () => {
   //   { id: 6, url: "/about", img: "/images/dholeraprime.jpg" },
   // ];
 
-  function NextArrow(props) {
+  function NextArrow(props: CustomArrowProps) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -431,7 +431,7 @@ const Properties = () => {
     );
   }
 
-  function PrevArrow(props) {
+  function PrevArrow(props: CustomArrowProps) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -467,7 +467,13 @@ const Properties = () => {
   }
 
   // Helper function for responsive styles
-  function responsiveStyles(breakpoints) {
+  type Breakpoints = {
+    mobile: Record<string, any>;
+    tablet: Record<string, any>;
+    laptop: Record<string, any>;
+    desktop: Record<string, any>;
+  };
+  function responsiveStyles(breakpoints: Breakpoints) {
     if (typeof window === "undefined") return breakpoints.desktop;
     const windowWidth = window.innerWidth;
 
@@ -492,7 +498,8 @@ const Properties = () => {
     speed: 500,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    beforeChange: (oldIndex, newIndex) => setActiveIndex(newIndex),
+    beforeChange: (oldIndex: number, newIndex: number) =>
+      setActiveIndex(newIndex),
     responsive: [
       {
         breakpoint: 1024,
