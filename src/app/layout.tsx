@@ -6,7 +6,7 @@ import Footer from "./components/footer/Footer";
 import WhatsAppButton from "./whatsappbutton/page";
 
 export const metadata = {
-  title: "Inrext",
+  title: "Commericial Properties in Noida - Inrext",
   description: "Real Estate Platform",
 };
 
@@ -48,7 +48,7 @@ export default function RootLayout({
         />
         {/* Head is now empty; fonts and favicon are in _document.js */}
       </head>
-      <body className="antialiased bg-blue-50 min-h-screen">
+      <body className="min-h-screen antialiased bg-blue-50">
         <ThemeProvider>
           {/* Navbar and Footer must be client components */}
           <Navbar />
