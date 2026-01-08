@@ -21,7 +21,9 @@ const Footer: React.FC = () => {
   const { isDarkMode } = useTheme();
   return (
     <div
-      className={` ${isDarkMode ? "bg-blue-500 backdrop-blur-md" : "bg-blue-50"}`}
+      className={` ${
+        isDarkMode ? "bg-blue-500 backdrop-blur-md" : "bg-blue-50"
+      }`}
     >
       <div className="lg:mt-[0rem] w-full md:mt-[0rem] mt-[0rem] lg:px-0 px-5 ">
         <div
@@ -33,14 +35,14 @@ const Footer: React.FC = () => {
             className="w-[10rem]"
             src={
               isDarkMode
-                ? "/images/Inrext white logo png.png"
-                : "/images/Inrext logo.png"
+                ? "/images/inrext-white-logo.png"
+                : "/images/inrext-blue-logo.png"
             }
             alt=""
             width={200}
             height={50}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-3 pt-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 pt-2 lg:grid-cols-4 md:grid-cols-3">
             <div>
               <div
                 className={`lg:text-[0.9rem] md:text-[0.9rem] text-[0.8ren] leading-[1.25rem] py-3 lg:w-full md:w-[16rem] w-full ${
@@ -61,14 +63,20 @@ const Footer: React.FC = () => {
               <ul className="flex items-center gap-2 my-4 md:mt-0">
                 <li className="flex items-center">
                   <span className="p-[0.50rem] rounded-full bg-white hover:bg-blue-400 text-blue-500 hover:text-white">
-                    <Link href="https://www.facebook.com/inrext" target="_blank">
+                    <Link
+                      href="https://www.facebook.com/inrext"
+                      target="_blank"
+                    >
                       <FaFacebookF />
                     </Link>
                   </span>
                 </li>
                 <li className="flex items-center">
                   <span className="p-[0.50rem] rounded-full bg-white hover:bg-blue-400 text-blue-500 hover:text-white">
-                    <Link href="https://twitter.com/Inrextpvtltd" target="_blank">
+                    <Link
+                      href="https://twitter.com/Inrextpvtltd"
+                      target="_blank"
+                    >
                       <FaTwitter />
                     </Link>
                   </span>
@@ -85,14 +93,17 @@ const Footer: React.FC = () => {
                 </li>
                 <li className="flex items-center">
                   <span className="p-[0.50rem] rounded-full bg-white hover:bg-blue-400 text-blue-500 hover:text-white">
-                    <Link href="https://www.instagram.com/inrext" target="_blank">
+                    <Link
+                      href="https://www.instagram.com/inrext"
+                      target="_blank"
+                    >
                       <FaInstagram />
                     </Link>
                   </span>
                 </li>
               </ul>
             </div>
-            <div className="flex flex-col lg:items-center md:items-center items-start ">
+            <div className="flex flex-col items-start lg:items-center md:items-center ">
               <h1
                 className={`md:text-[1.20rem] text-[1.35rem] font-medium  ${
                   isDarkMode ? "text-white" : "text-black"
@@ -106,7 +117,10 @@ const Footer: React.FC = () => {
                 }`}
               >
                 <li>
-                  <Link href="/" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -114,7 +128,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/about"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -122,7 +139,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/properties" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/properties"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -130,7 +150,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/events" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/events"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -138,7 +161,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/achievements" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/achievements"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -146,7 +172,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/journey" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/journey"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -154,7 +183,10 @@ const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/career" className="flex items-center gap-1  cursor-pointer transform transition-transform duration-500 ease-in-out hover:translate-x-5">
+                  <Link
+                    href="/career"
+                    className="flex items-center gap-1 transition-transform duration-500 ease-in-out transform cursor-pointer hover:translate-x-5"
+                  >
                     <span>
                       <IoIosArrowForward className="text-blue-500" />
                     </span>
@@ -163,8 +195,7 @@ const Footer: React.FC = () => {
                 </li>
               </ul>
             </div>
-            <div className="flex flex-col lg:items-center md:items-center items-start">
-            </div>
+            <div className="flex flex-col items-start lg:items-center md:items-center"></div>
             <div>
               <h1
                 className={`md:text-[1.20rem] text-[1.35rem] font-medium ${
@@ -182,7 +213,8 @@ const Footer: React.FC = () => {
                   <span className="text-[1.2rem]">
                     <MdOutlineLocationOn className="text-blue-500" />
                   </span>
-                  3rd Floor, D-4, D Block, Sector-10, Noida, Uttar Pradesh, 201301
+                  3rd Floor, D-4, D Block, Sector-10, Noida, Uttar Pradesh,
+                  201301
                 </li>
                 <li className="flex items-center gap-1">
                   <span className="text-[1.2rem]">

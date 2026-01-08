@@ -463,8 +463,8 @@ const Header: React.FC = () => {
             <img
               src={
                 isDarkMode
-                  ? "/images/Inrext white logo png.png"
-                  : "/images/Inrext logo.png"
+                  ? "/images/inrext-white-logo.png"
+                  : "/images/inrext-blue-logo.png"
               }
               alt="Inrext Logo"
               className="h-[40px] w-[160px]"
@@ -564,8 +564,8 @@ const Header: React.FC = () => {
               <img
                 src={
                   isDarkMode
-                    ? "/images/Inrext logo with white tagline.png"
-                    : "/images/Inrext logo.png"
+                    ? "/images/inrext-white-logo.png"
+                    : "/images/inrext-blue-logo.png"
                 }
                 alt="Inrext Logo"
                 className="h-8"
