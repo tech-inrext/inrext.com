@@ -1,3 +1,25 @@
+"use client";
+import React from 'react';
+import { useTheme } from '../content/ThemeContext';
+
+const Profile: React.FC = () => {
+  const { isDarkMode } = useTheme();
+
+  return (
+    <div className={`min-h-screen ${isDarkMode ? "bg-black text-white" : "bg-blue-50 text-gray-900"}`}>
+      <div className="max-w-7xl mx-auto px-6 py-[5rem]">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-4">Profile</h1>
+          <p className="text-lg">Profile page is under development.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
+
+// Commented out previous implementation
 // "use client";
 // // Profile.tsx (Next.js + TypeScript)
 // import React, { useState, useEffect, ChangeEvent, FormEvent, useContext } from 'react';
