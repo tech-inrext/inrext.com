@@ -195,40 +195,85 @@ const Footer: React.FC = () => {
                 </li>
               </ul>
             </div>
-            <div className="flex flex-col items-start lg:items-center md:items-center"></div>
-            <div>
+            <div className="flex flex-col items-start ">
               <h1
                 className={`md:text-[1.20rem] text-[1.35rem] font-medium ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
+              >
+                Address
+              </h1>
+              <ul
+                className={`py-3 lg:text-[0.9rem] md:text-[0.9rem] text-[0.8rem] leading-[1.5rem] space-y-4 ${
+                  isDarkMode ? "text-white" : "text-black"
+                }`}
+              >
+                <li className="flex items-center gap-2">
+                  <span className="text-[1.2rem]">
+                    <MdOutlineLocationOn className="text-white text-4xl" />
+                  </span>
+                  3rd Floor, D-4, D Block, Sector-10,
+                  <br />
+                  Noida, Uttar Pradesh, 201301
+                </li>
+                <li className="flex items-center gap-2 ">
+                  <span className="text-[1.2rem]">
+                    <MdOutlineLocationOn className="text-white text-4xl" />
+                  </span>
+                  4th floor, Pandey Plaza, Exhibition Rd,
+                  <br />
+                  Ali Nagar Colony, Salimpur Ahra, Golambar,
+                  <br />
+                  Patna, Bihar 800001
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-[1.2rem]">
+                    <MdOutlineLocationOn className="text-white text-4xl" />
+                  </span>
+                  312, Felix Sq Rd, Golf City,
+                  <br />
+                  Lucknow, Muzaffar Nagar Ghusval,
+                  <br />
+                  Uttar Pradesh 226030
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col items-start ">
+              <h1
+                className={`md:text-[1.20rem] text-[1.65rem] font-medium ${
                   isDarkMode ? "text-white" : "text-black"
                 }`}
               >
                 Contact
               </h1>
               <ul
-                className={`py-3 lg:text-[0.9rem] md:text-[0.9rem] text-[0.8ren] leading-[1.5rem] ${
-                  isDarkMode ? "text-white" : "text-black"
-                }`}
-              >
-                <li className="flex items-center gap-1">
-                  <span className="text-[1.2rem]">
-                    <MdOutlineLocationOn className="text-blue-500" />
-                  </span>
-                  3rd Floor, D-4, D Block, Sector-10, Noida, Uttar Pradesh,
-                  201301
-                </li>
-                <li className="flex items-center gap-1">
-                  <span className="text-[1.2rem]">
-                    <MdPhoneInTalk className="text-blue-500" />
-                  </span>
-                  +91 8010178010
-                </li>
-                <li className="flex items-center gap-1">
-                  <span className="text-[1.2rem]">
-                    <MdOutlineEmail className="text-blue-500" />
-                  </span>
-                  info@inrext.com
-                </li>
-              </ul>
+  className={`py-3 lg:text-[0.9rem] md:text-[0.9rem] text-[0.8rem] leading-[1.5rem] space-y-4 ${
+    isDarkMode ? "text-white" : "text-black"
+  }`}
+>
+  {/* Phone */}
+  <li className="flex items-center gap-x-2">
+    <MdPhoneInTalk className="text-white text-[1.2rem]" />
+    <a
+      href="tel:+918010178010"
+      className="hover:text-blue-500 transition-colors"
+    >
+      +91 8010178010
+    </a>
+  </li>
+
+  {/* Email */}
+  <li className="flex items-center gap-x-2">
+    <MdOutlineEmail className="text-white text-[1.2rem]" />
+    <a
+      href="mailto:info@inrext.com"
+      className="hover:text-blue-500 transition-colors"
+    >
+      info@inrext.com
+    </a>
+  </li>
+</ul>
+
             </div>
           </div>
         </div>
@@ -243,8 +288,25 @@ const Footer: React.FC = () => {
             Copyright <span className="">inrext.com.</span> All Rights Reserved.
           </h1>
           <ul className="flex gap-5 lg:text-[0.9rem] md:text-[0.9rem] text-[0.8ren] leading-[1.5rem]">
-            <li>Terms of use</li>
-            <li>Privacy Policy</li>
+            <ul className="flex gap-4">
+              <li>
+                <Link
+                  href="/Terms-conditions"
+                  className="cursor-pointer hover:underline"
+                >
+                  Terms of Use
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="/Privacy-policy"
+                  className="cursor-pointer hover:underline"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
           </ul>
         </div>
       </div>

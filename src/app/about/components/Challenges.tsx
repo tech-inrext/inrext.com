@@ -40,8 +40,8 @@ const Challenges = () => {
                   <div className="absolute top-2 left-1/2 transform -translate-x-1/2 h-[1.5rem] w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
                   <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 h-[1.5rem] w-px bg-gradient-to-t from-transparent via-blue-500 to-transparent" />
                 </div>
-                <div className="flex flex-col justify-center items-center pb-5 px-5">
-                  <h2 className="dm-serif-display text-white font-normal lg:text-[1.5rem] md:text-[1.3rem] text-[1.2rem] lg:leading-[1.8rem] md:leading-[1.6rem] leading-[1.4rem]">
+                <div className="flex flex-col justify-center gap-4 items-center pb-5 px-5">
+                  <h2 className="dm-serif-display text-white font-normal lg:text-[1.2rem] md:text-[1.0rem] text-[0.9rem] lg:leading-[1.8rem] md:leading-[1.6rem] leading-[1.4rem]">
                     {item.title}
                   </h2>
                   <p className={`lg:text-[0.9rem] md:text-[0.9rem] text-[0.8rem] lg:leading-[1.25rem] leading-[1.1rem] text-center ${isDarkMode ? "text-white" : "text-gray-900"} leading-6`}>
