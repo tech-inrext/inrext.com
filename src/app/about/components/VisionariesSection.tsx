@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,10 +7,11 @@ import dynamic from "next/dynamic";
 import { useTheme } from "../../content/ThemeContext";
 import { fetchPillarsByCategory } from "../../../services/pillarService";
 import { FaTelegram } from "react-icons/fa";
+
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
 function getImageSrc(member: any) {
-  if (member.profileImages && member.profileImages.length > 0) {
+  if (member.profileImages?.length) {
     const img = member.profileImages[0];
     if (typeof img === "object" && img.url) return img.url;
     if (typeof img === "string") return img;
@@ -23,9 +25,32 @@ function getImageSrc(member: any) {
 const VisionariesSection = () => {
   const { isDarkMode } = useTheme();
   const [visionaries, setVisionaries] = useState<any[]>([]);
+
   useEffect(() => {
-    fetchPillarsByCategory("the-visionaries").then(setVisionaries);
+    const loadVisionaries = async () => {
+      try {
+        const res = await fetchPillarsByCategory("the-visionaries");
+
+        // ✅ GUARANTEED ARRAY HANDLING
+        if (Array.isArray(res)) {
+          setVisionaries(res);
+        } else if (Array.isArray(res?.data)) {
+          setVisionaries(res.data);
+        } else if (Array.isArray(res?.data?.data)) {
+          setVisionaries(res.data.data);
+        } else {
+          console.error("Unexpected API response:", res);
+          setVisionaries([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch visionaries:", err);
+        setVisionaries([]);
+      }
+    };
+
+    loadVisionaries();
   }, []);
+
   const settings = {
     dots: false,
     infinite: true,
@@ -36,11 +61,12 @@ const VisionariesSection = () => {
     autoplaySpeed: 2000,
     cssEase: "linear",
     responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+      { breakpoint: 1024, settings: { slidesToShow: 1 } },
     ],
   };
+
   return (
-    <div
+   <div
       className={`overflow-hidden ${
         isDarkMode ? "bg-black backdrop-blur-md" : "bg-blue-50"
       }`}
@@ -63,8 +89,8 @@ const VisionariesSection = () => {
             <div className="grid lg:grid-cols-2 gap-4 pb-[0rem]">
               {visionaries.map((member) => (
                 <div key={member._id} className="px-[0.6rem]">
-                  <Link href={`/team/${encodeURIComponent(member.name)}`}>
-                    <div
+              <Link href={`/team/${encodeURIComponent(member.name)}`}>
+                 <div
                       className={`h-full flex flex-col justify-center items-center px-5 rounded-xl group cursor-pointer ${
                         isDarkMode
                           ? " border border-gray-500/30"

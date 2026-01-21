@@ -60,12 +60,8 @@ export const propertyService = {
     if (!slug) return null;
 
     try {
-      const res = await axios.get(`${BACKEND_URL}/public/property`, {
-        params: {
-          slug,
-          withChildren,
-        },
-      });
+      console.log("Fetching property for slug:", slug, "withChildren:", withChildren);
+      const res = await api.get(`/public/property/${slug}`);
 
       return res.data?.success ? res.data.data : null;
     } catch (error) {

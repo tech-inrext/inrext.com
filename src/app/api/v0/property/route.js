@@ -7,11 +7,35 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
 
+    const slug = searchParams.get("slug");
+    const withChildren = searchParams.get("withChildren") === "true";
+    if (slug) {
+      // Fetch single property by slug
+      const crmRes = await fetch(
+        `${CRM_PUBLIC_API}/api/v0/public/property?slug=${encodeURIComponent(slug)}&withChildren=${withChildren}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        }
+      );
+      if (!crmRes.ok) {
+        throw new Error("CRM API failed");
+      }
+      const crmData = await crmRes.json();
+      return NextResponse.json({
+        success: crmData.success !== false,
+        data: crmData.data || null,
+      });
+    }
+
+    // List mode (default)
     const category = searchParams.get("category") || "";
     const featured = searchParams.get("featured") || "false";
     const limit = searchParams.get("limit") || "20";
 
-    // 🔒 SERVER → SERVER call (NO data leak)
     const crmRes = await fetch(
       `${CRM_PUBLIC_API}/api/v0/public/property?category=${category}&featured=${featured}&limit=${limit}`,
       {
@@ -28,19 +52,15 @@ export async function GET(req) {
     }
 
     const crmData = await crmRes.json();
-
-    // ✅ Always sanitize output
     const properties = Array.isArray(crmData?.data)
       ? crmData.data
       : [];
-
     return NextResponse.json({
       success: true,
       data: properties,
     });
   } catch (error) {
     console.error("Website Property Proxy Error:", error);
-
     return NextResponse.json(
       {
         success: false,

@@ -11,46 +11,70 @@ import { FaTelegram } from "react-icons/fa";
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
 function getImageSrc(member: any) {
-  if (member.profileImages && member.profileImages.length > 0) {
+  if (Array.isArray(member?.profileImages) && member.profileImages.length > 0) {
     const img = member.profileImages[0];
     if (typeof img === "object" && img.url) return img.url;
     if (typeof img === "string") return img;
   }
-  if (member.image) return member.image;
+
+  if (member?.image) return member.image;
+
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    member.name || "User"
+    member?.name || "User"
   )}`;
 }
 
 const GrowthNavigatorsSection = () => {
   const { isDarkMode } = useTheme();
   const [navigators, setNavigators] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     fetchPillarsByCategory("growth-navigators")
-      .then(setNavigators)
+      .then((res: any) => {
+        if (!isMounted) return;
+
+        const list = Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res)
+          ? res
+          : [];
+
+        setNavigators(list);
+      })
       .catch((err) => {
         console.error("Failed to fetch Growth Navigators:", err);
         setNavigators([]);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Slider settings for both desktop and mobile
   const sliderSettings = {
     dots: false,
-    infinite: true,
-    slidesToShow: 4, // Desktop
+    infinite: navigators.length > 1,
+    slidesToShow: 4,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: navigators.length > 1,
     speed: 500,
     autoplaySpeed: 2000,
     cssEase: "linear",
     responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 3, slidesToScroll: 1 } },
-      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-      { breakpoint: 768, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
+
+  if (loading) return null;
+  if (!Array.isArray(navigators) || navigators.length === 0) return null;
 
   return (
     <div
@@ -58,12 +82,12 @@ const GrowthNavigatorsSection = () => {
         isDarkMode ? "bg-black backdrop-blur-md" : "bg-blue-50"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 pt-[5rem] pb-[3rem] flex flex-col justify-center items-center overflow-hidden">
-        <h1 className="dm-serif-display text-center text-blue-500 lg:text-[3.1rem] md:text-[2.1rem] text-[1.5rem] lg:leading-[2.8rem] md:leading-[1.8rem] leading-[1.4rem] capitalize">
+      <div className="max-w-7xl mx-auto px-6 pt-[5rem] pb-[3rem] flex flex-col justify-center items-center">
+        <h1 className="dm-serif-display text-center text-blue-500 lg:text-[3.1rem] md:text-[2.1rem] text-[1.5rem] capitalize">
           Growth
           <span
             className={`cormorant-garamond ps-3 pe-3 ${
-              isDarkMode ? "text-white  backdrop-blur-md " : "text-blue-500"
+              isDarkMode ? "text-white" : "text-blue-500"
             }`}
           >
             Navigators
@@ -71,17 +95,16 @@ const GrowthNavigatorsSection = () => {
         </h1>
       </div>
 
-      {/* Slider for all screens */}
-      <div className="max-w-7xl mx-auto lg:px-0 mb-[0rem]">
+      <div className="max-w-7xl mx-auto lg:px-0 mb-[2rem]">
         <Slider
           {...sliderSettings}
           className="overflow-hidden pb-[2rem] lg:h-[26rem] h-[26rem]"
         >
           {navigators.map((member) => (
             <div key={member._id} className="px-[0.6rem]">
-            <Link href={`/team/${member.slug || member._id}`}>
+                <Link href={`/team/${encodeURIComponent(member.name)}`}>
                 <div
-                  className={`h-full flex flex-col justify-center items-center px-5 rounded-xl group cursor-pointer ${
+                  className={`h-full flex flex-col justify-center items-center px-5 rounded-xl cursor-pointer ${
                     isDarkMode
                       ? "border border-gray-500/30"
                       : "border-2 border-blue-500"
@@ -91,33 +114,32 @@ const GrowthNavigatorsSection = () => {
                     <Image
                       className="w-full h-full object-contain bg-white rounded-xl"
                       src={getImageSrc(member)}
-                      alt={member.name}
+                      alt={member?.name || "Member"}
                       width={240}
                       height={192}
                       priority
                     />
                   </div>
-                  <div className="flex flex-col py-5 w-full justify-center text-center items-center">
-                    <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
-                      {member.name}
+
+                  <div className="flex flex-col py-5 w-full text-center items-center">
+                    <h1 className="text-blue-500 font-semibold uppercase text-[1rem]">
+                      {member?.name}
                     </h1>
                     <p
                       className={`capitalize text-[0.9rem] ${
                         isDarkMode ? "text-white" : "text-gray-500"
                       }`}
                     >
-                      {member.position || member.designation}
+                      {member?.position || member?.designation}
                     </p>
+
                     <button
                       type="button"
-                      className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
+                      className="mt-5 w-full flex justify-between items-center text-white px-4 py-2 rounded-full bg-blue-500"
                       tabIndex={-1}
-                      aria-label="Say Hello"
                     >
-                      Say Hello👋{" "}
-                      <span className="text-[1.50rem]">
-                        <FaTelegram />
-                      </span>
+                      Say Hello 👋
+                      <FaTelegram className="text-[1.5rem]" />
                     </button>
                   </div>
                 </div>

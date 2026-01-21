@@ -28,20 +28,16 @@ const SingleTeam = () => {
           powerhouseTeamRes,
           growthNavigatorsRes,
         ] = await Promise.all([
-          fetch("/api/pillar?category=the-visionaries").then((r) => r.json()),
-          fetch("/api/pillar?category=the-strategic-force").then((r) =>
-            r.json()
-          ),
-          fetch("/api/pillar?category=the-powerhouse-team").then((r) =>
-            r.json()
-          ),
-          fetch("/api/pillar?category=growth-navigators").then((r) => r.json()),
+          fetch("/api/v0/pillars?category=the-visionaries").then((r) => r.json()),
+          fetch("/api/v0/pillars?category=the-strategic-force").then((r) => r.json()),
+          fetch("/api/v0/pillars?category=the-powerhouse-team").then((r) => r.json()),
+          fetch("/api/v0/pillars?category=growth-navigators").then((r) => r.json()),
         ]);
-        setVisionaries(Array.isArray(visionariesRes) ? visionariesRes : []);
+        setVisionaries(Array.isArray(visionariesRes) ? visionariesRes : (Array.isArray(visionariesRes?.data) ? visionariesRes.data : []));
         setTeamMembers([
-          ...(Array.isArray(strategicForceRes) ? strategicForceRes : []),
-          ...(Array.isArray(powerhouseTeamRes) ? powerhouseTeamRes : []),
-          ...(Array.isArray(growthNavigatorsRes) ? growthNavigatorsRes : []),
+          ...(Array.isArray(strategicForceRes) ? strategicForceRes : (Array.isArray(strategicForceRes?.data) ? strategicForceRes.data : [])),
+          ...(Array.isArray(powerhouseTeamRes) ? powerhouseTeamRes : (Array.isArray(powerhouseTeamRes?.data) ? powerhouseTeamRes.data : [])),
+          ...(Array.isArray(growthNavigatorsRes) ? growthNavigatorsRes : (Array.isArray(growthNavigatorsRes?.data) ? growthNavigatorsRes.data : [])),
         ]);
       } catch (err) {
         setError("Failed to fetch team data");
@@ -73,7 +69,7 @@ const SingleTeam = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await fetch("/api/v0/property");
+        const res = await fetch("/api/v0/pillars?category");
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           setProperties(data.data);

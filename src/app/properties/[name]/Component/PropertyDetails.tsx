@@ -9,6 +9,7 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 const MapView = dynamic(() => import("../../MapView"), { ssr: false });
 import type { Property } from "../../../../services/propertyService";
+import api from "@/services/api";
 
 const PropertyDetails: React.FC = () => {
   // ...existing code from SingleProperties...
@@ -17,15 +18,12 @@ const PropertyDetails: React.FC = () => {
   const [childImages, setChildImages] = useState<string[]>([]);
   const [childLoading, setChildLoading] = useState(false);
   const params = useParams();
-  const name =
+  const slug =
     typeof params?.name === "string"
       ? params.name
       : Array.isArray(params?.name)
       ? params.name[0]
       : "";
-  const displayName = name
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
   const { isDarkMode } = useTheme();
   const [property, setProperty] = useState<Property | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -35,66 +33,49 @@ const PropertyDetails: React.FC = () => {
   const [subProperties, setSubProperties] = useState<any[]>([]);
   const [propertyId, setPropertyId] = useState<string | null>(null);
 
- useEffect(() => {
-  if (!name) return;
+  useEffect(() => {
+    if (!slug) return;
 
-  let isMounted = true;
+    let isMounted = true;
 
-  const fetchData = async () => {
-    try {
-      // ✅ fetchProperties RETURNS Property[]
-      const list = await propertyService.fetchProperties({
-        featured: "true",
-        limit: "100",
-      });
+    const fetchData = async () => {
+      try {
+        // Fetch property by slug
+        const prop = await propertyService.fetchPropertyBySlug(slug);
+        if (!isMounted) return;
+        setProperty(prop);
+        setPropertyId(prop?._id || null);
 
-      // Match parent by slug / projectName / propertyName
-      const parent =
-        list.find(
-          (p) =>
-            p.slug === displayName ||
-            p.projectName?.toLowerCase() === displayName.toLowerCase() ||
-            p.propertyName?.toLowerCase() === displayName.toLowerCase()
-        ) || null;
-
-      if (!isMounted) return;
-
-      setProperty(parent);
-      setPropertyId(parent?._id || null);
-
-      // ✅ Fetch sub-properties by parentId
-      if (parent?._id) {
-        try {
-          const subRes = await propertyService.getSubProperties(parent._id);
-          const filtered = Array.isArray(subRes?.data)
-            ? subRes.data.filter(
-                (sp: any) => sp.parentId === parent._id
-              )
-            : [];
-
-          setSubProperties(filtered);
-        } catch (err) {
+        // Fetch sub-properties by parentId
+        if (prop?._id) {
+          try {
+            const subRes = await propertyService.getSubProperties(prop._id);
+            const filtered = Array.isArray(subRes?.data)
+              ? subRes.data.filter((sp: any) => sp.parentId === prop._id)
+              : [];
+            setSubProperties(filtered);
+          } catch (err) {
+            setSubProperties([]);
+          }
+        } else {
           setSubProperties([]);
         }
-      } else {
-        setSubProperties([]);
+      } catch (err) {
+        console.error("Property fetch error:", err);
+        if (isMounted) {
+          setProperty(null);
+          setPropertyId(null);
+          setSubProperties([]);
+        }
       }
-    } catch (err) {
-      console.error("Property fetch error:", err);
-      if (isMounted) {
-        setProperty(null);
-        setPropertyId(null);
-        setSubProperties([]);
-      }
-    }
-  };
+    };
 
-  fetchData();
+    fetchData();
 
-  return () => {
-    isMounted = false;
-  };
-}, [name, displayName]);
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
 
 
   if (!property) {
@@ -391,9 +372,7 @@ const PropertyDetails: React.FC = () => {
                               if (childKey) {
                                 try {
                                   const res = await fetch(
-                                    `/api/v0/property/${encodeURIComponent(
-                                      childKey
-                                    )}`
+                                    `/api/v0/public/property/${encodeURIComponent(childKey)}`
                                   );
                                   const result = await res.json();
                                   let data = result.data || result;
@@ -536,7 +515,7 @@ const PropertyDetails: React.FC = () => {
                             ? `${childDetails.minSize}${
                                 childDetails.sizeUnit
                                   ? ` ${childDetails.sizeUnit}`
-                                  : ""
+                                  : "" 
                               }`
                             : "-"}
                         </div>

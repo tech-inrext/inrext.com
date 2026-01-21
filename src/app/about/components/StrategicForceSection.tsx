@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,27 +7,50 @@ import dynamic from "next/dynamic";
 import { useTheme } from "../../content/ThemeContext";
 import { fetchPillarsByCategory } from "../../../services/pillarService";
 import { FaTelegram } from "react-icons/fa";
+
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
 function getImageSrc(member: any) {
-  if (member.profileImages && member.profileImages.length > 0) {
+  if (member?.profileImages?.length) {
     const img = member.profileImages[0];
     if (typeof img === "object" && img.url) return img.url;
     if (typeof img === "string") return img;
   }
-  if (member.image) return member.image;
+  if (member?.image) return member.image;
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    member.name || "User"
+    member?.name || "User"
   )}`;
 }
 
 const StrategicForceSection = () => {
   const { isDarkMode } = useTheme();
   const [strategicForce, setStrategicForce] = useState<any[]>([]);
+
   useEffect(() => {
-    fetchPillarsByCategory("the-strategic-force").then(setStrategicForce);
+    const loadStrategicForce = async () => {
+      try {
+        const res = await fetchPillarsByCategory("the-strategic-force");
+
+        // ✅ ALWAYS SET ARRAY
+        if (Array.isArray(res)) {
+          setStrategicForce(res);
+        } else if (Array.isArray(res?.data)) {
+          setStrategicForce(res.data);
+        } else if (Array.isArray(res?.data?.data)) {
+          setStrategicForce(res.data.data);
+        } else {
+          console.error("Unexpected response:", res);
+          setStrategicForce([]);
+        }
+      } catch (err) {
+        console.error("Strategic Force fetch failed:", err);
+        setStrategicForce([]);
+      }
+    };
+
+    loadStrategicForce();
   }, []);
-  const settings = {
+const settings = {
     dots: false,
     infinite: true,
     slidesToShow: 2,
