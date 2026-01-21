@@ -35,66 +35,67 @@ const PropertyDetails: React.FC = () => {
   const [subProperties, setSubProperties] = useState<any[]>([]);
   const [propertyId, setPropertyId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!name) return;
-    // Call API for parent data based on transformed property name
-    const fetchData = async () => {
-      try {
-        const res = await propertyService.getAllProperties(
-          displayName,
-          1,
-          1,
-          "true",
-          "false"
-        );
-        let parent = res?.data?.[0] || null;
-        // Patch missing required fields for Property type
-        if (parent) {
-          parent = {
-            ...parent,
-            builderName: parent.builderName ?? "",
-            projectName: parent.projectName ?? "",
-            description: parent.description ?? "",
-            location: parent.location ?? "",
-            nearby: parent.nearby ?? [],
-            amenities: parent.amenities ?? [],
-            projectHighlights: parent.projectHighlights ?? [],
-            status: parent.status ?? [],
-            price: parent.price ?? "",
-            minPrice: typeof parent.minPrice === "number" ? parent.minPrice : 0,
-            minSize: parent.minSize ?? "",
-            maxSize: parent.maxSize ?? "",
-            sizeUnit: parent.sizeUnit ?? "",
-            images: parent.images ?? [],
-            mapLocation: parent.mapLocation ?? undefined,
-          };
-        }
-        setProperty(parent);
-        setPropertyId(parent?._id || null);
-        // Always fetch sub-properties from backend by parentId to ensure only direct children are shown
-        if (parent?._id) {
-          try {
-            const subRes = await propertyService.getSubProperties(parent._id);
-            // Filter to only those whose parentId matches parent._id (should already be the case, but for safety)
-            const filtered = (subRes?.data || []).filter(
-              (sp: any) =>
-                sp.parentId === parent._id || sp.parentId === parent?._id
-            );
-            setSubProperties(filtered);
-          } catch (subErr) {
-            setSubProperties([]);
-          }
-        } else {
+ useEffect(() => {
+  if (!name) return;
+
+  let isMounted = true;
+
+  const fetchData = async () => {
+    try {
+      // ✅ fetchProperties RETURNS Property[]
+      const list = await propertyService.fetchProperties({
+        featured: "true",
+        limit: "100",
+      });
+
+      // Match parent by slug / projectName / propertyName
+      const parent =
+        list.find(
+          (p) =>
+            p.slug === displayName ||
+            p.projectName?.toLowerCase() === displayName.toLowerCase() ||
+            p.propertyName?.toLowerCase() === displayName.toLowerCase()
+        ) || null;
+
+      if (!isMounted) return;
+
+      setProperty(parent);
+      setPropertyId(parent?._id || null);
+
+      // ✅ Fetch sub-properties by parentId
+      if (parent?._id) {
+        try {
+          const subRes = await propertyService.getSubProperties(parent._id);
+          const filtered = Array.isArray(subRes?.data)
+            ? subRes.data.filter(
+                (sp: any) => sp.parentId === parent._id
+              )
+            : [];
+
+          setSubProperties(filtered);
+        } catch (err) {
           setSubProperties([]);
         }
-      } catch (err) {
-        setProperty(null);
+      } else {
         setSubProperties([]);
-        setPropertyId(null);
       }
-    };
-    fetchData();
-  }, [name]);
+    } catch (err) {
+      console.error("Property fetch error:", err);
+      if (isMounted) {
+        setProperty(null);
+        setPropertyId(null);
+        setSubProperties([]);
+      }
+    }
+  };
+
+  fetchData();
+
+  return () => {
+    isMounted = false;
+  };
+}, [name, displayName]);
+
 
   if (!property) {
     return <div>Loading...</div>;

@@ -16,27 +16,59 @@ export default function CityPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+useEffect(() => {
+  if (!city) return;
 
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
-    propertyService.getAllProperties('', 1, 100, "true")
-      .then((res) => {
-        // Filter properties by city param
-        const cityParam = (city as string).toLowerCase().replace(/\s+/g, "");
-        const filtered = (res.data || []).filter((prop: Property) => {
-          const locationStr = Array.isArray(prop.location)
-            ? prop.location.join(" ").toLowerCase()
-            : (prop.location || "").toLowerCase();
-          return locationStr.includes(cityParam);
-        });
+  let isMounted = true;
+
+  const fetchCityProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // ✅ fetchProperties RETURNS Property[]
+      const list = await propertyService.fetchProperties({
+        featured: "true",
+        limit: "100",
+      });
+
+      const cityParam = String(city)
+        .toLowerCase()
+        .replace(/\s+/g, "");
+
+      const filtered = list.filter((prop) => {
+        const locationStr = Array.isArray(prop.location)
+          ? prop.location.join(" ").toLowerCase()
+          : typeof prop.location === "string"
+          ? prop.location.toLowerCase()
+          : "";
+
+        return locationStr.replace(/\s+/g, "").includes(cityParam);
+      });
+
+      if (isMounted) {
         setProperties(filtered);
-      })
-      .catch((err) => {
+      }
+    } catch (error) {
+      console.error("Failed to fetch properties:", error);
+      if (isMounted) {
         setError("Failed to fetch properties");
-      })
-      .finally(() => setLoading(false));
-  }, [city]);
+      }
+    } finally {
+      if (isMounted) {
+        setLoading(false);
+      }
+    }
+  };
+
+  fetchCityProperties();
+
+  return () => {
+    isMounted = false;
+  };
+}, [city]);
+
+
 
   // Use the first property as the city data for header, or fallback to city name
   const data = properties[0] || {
