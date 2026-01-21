@@ -53,7 +53,7 @@ const EmpoweringInvestors = () => {
               />
             </div>
           </div>
-          <div className="grid grid-rows-4 gap-x-5 gap-y-5 mt-0 text-center">
+          <div className="grid grid-rows-4 gap-x-3 gap-y-3 mt-0 text-center">
             {[
               {
                 icon: "/images/About icons/10.png",
@@ -110,7 +110,7 @@ const EmpoweringInvestors = () => {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-5 lg:p-0 md:p-[2rem] p-[1.5rem]  bg-zinc-900 rounded-4xl"
+                className="grid grid-cols-5  lg:p-0 md:p-[1.25rem] p-[1rem] bg-zinc-900 rounded-4xl"
               >
                 <div className="col-span-2 max- h-full flex justify-center items-center relative">
                   <div className="relative p-1 rounded-full border border-blue-500 z-0">
@@ -131,7 +131,7 @@ const EmpoweringInvestors = () => {
                   <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 h-[1.8rem] w-px bg-gradient-to-t from-transparent via-blue-500 to-transparent" />
                 </div>
                 <div className="col-span-3 flex flex-col gap-2 justify-center items-center">
-                  <h2 className="dm-serif-display text-white font-normal lg:text-[1.5rem] md:text-[1.3rem] text-[1.2rem] lg:leading-[1.8rem] md:leading-[1.6rem] leading-[1.4rem]">
+                  <h2 className="dm-serif-display text-white font-normal lg:text-[1.2rem] md:text-[1.0rem] text-[0.9rem] lg:leading-[1.8rem] md:leading-[1.6rem] leading-[1.4rem]">
                     {item.title}
                   </h2>
                   <p
