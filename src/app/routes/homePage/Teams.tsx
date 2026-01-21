@@ -63,35 +63,57 @@ const Teams: React.FC = () => {
 
   useEffect(() => {
     AOS.init({ once: true });
+async function fetchGrowthNavigators() {
+  try {
+    const res = await axios.get<{ data: TeamMember[] }>(
+      "/api/pillar?category=growth-navigators"
+    );
 
-    async function fetchGrowthNavigators() {
-      try {
-        const res = await axios.get("/api/pillar?category=growth-navigators");
+    const members: TeamMember[] = Array.isArray(res.data?.data)
+      ? res.data.data.filter(
+          (m: TeamMember) => m.category === "growth-navigators"
+        )
+      : [];
 
-        // Safety: ensure array & filter by category
-        const members = Array.isArray(res.data?.data)
-          ? res.data.data.filter((m) => m.category === "growth-navigators")
-          : [];
+    setTeamMembers(members);
+  } catch (error) {
+    console.error("Failed to fetch Growth-Navigators:", error);
+    setTeamMembers([]);
+  }
+}
 
-        setTeamMembers(members);
-      } catch (error) {
-        console.error("Failed to fetch Growth-Navigators:", error);
-        setTeamMembers([]);
-      }
-    }
 
     fetchGrowthNavigators();
   }, []);
 
-  const getImageSrc = (member: TeamMember) => {
-    if (member.image) return member.image.startsWith("http") ? member.image : `/images/${member.image.replace(/^\/images\//, "")}`;
-    if (member.profileImages && member.profileImages.length > 0) {
-      let img = member.profileImages[0];
-      if (typeof img === "object" && (img as any).url) img = (img as any).url;
-      return typeof img === "string" ? (img.startsWith("http") ? img : `/images/${img.replace(/^\/images\//, "")}`) : "/images/default-profile.png";
+ const getImageSrc = (member: TeamMember) => {
+  // Use the explicit `string | undefined` type
+  if (member.image) {
+    return member.image.startsWith("http")
+      ? member.image
+      : `/images/${member.image.replace(/^\/images\//, "")}`;
+  }
+
+  if (member.profileImages && member.profileImages.length > 0) {
+    let img: string | undefined;
+
+    const firstProfile = member.profileImages[0];
+
+    if (typeof firstProfile === "string") {
+      img = firstProfile;
+    } else if (typeof firstProfile === "object" && firstProfile?.url) {
+      img = firstProfile.url;
     }
-    return "/images/default-profile.png";
-  };
+
+    if (img) {
+      return img.startsWith("http") ? img : `/images/${img.replace(/^\/images\//, "")}`;
+    }
+  }
+
+  // fallback
+  return "/images/default-profile.png";
+};
+
 
   return (
     <div className={`overflow-hidden ${isDarkMode ? "bg-black backdrop-blur-md" : "bg-blue-50"}`}>
