@@ -1,56 +1,35 @@
-// Type for responsive breakpoints
-type Breakpoints = {
-  mobile: React.CSSProperties;
-  tablet: React.CSSProperties;
-  laptop: React.CSSProperties;
-  desktop: React.CSSProperties;
-};
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // Properties.jsx
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
+import Slider, { CustomArrowProps } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useTheme } from "../../content/ThemeContext";
 import Link from "next/link";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import type { Property } from "../../../services/propertyService";
 import { propertyService } from "../../../services/propertyService";
-import Image from "next/image";
 
 const Properties = () => {
   const { isDarkMode } = useTheme();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<any[]>([]);
 
-  // Fetch all properties from backend
   useEffect(() => {
-    propertyService
-      .fetchProperties({ featured: "false", limit: "100" })
-      .then((res) => setProperties(res))
-      .catch(() => setProperties([]));
+    async function fetchProperties() {
+      try {
+        const data = await propertyService.fetchProperties();
+        setProperties(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Failed to fetch properties:", error);
+        setProperties([]);
+      }
+    }
+    fetchProperties();
   }, []);
 
-  // Utility: Normalize images
-  const normalizeImages = (imgs: any[] = []): string[] =>
-    Array.isArray(imgs) && imgs.length > 0
-      ? imgs
-          .map((img) => (typeof img === "string" ? img : img?.url))
-          .filter((img): img is string => Boolean(img))
-      : [];
-
-  // const properties = [
-  //   { id: 1, url: "/about", img: "/images/delhi.jpg" },
-  //   { id: 2, url: "/contact", img: "/images/noida.jpg" },
-  //   { id: 3, url: "/about", img: "/images/Nainital.jpg" },
-  //   { id: 4, url: "/about", img: "/images/Gnoida.jpg" },
-  //   { id: 5, url: "/about", img: "/images/dehradun.avif" },
-  //   { id: 6, url: "/about", img: "/images/dholeraprime.jpg" },
-  // ];
-
-  function NextArrow(props: { className?: string; style?: React.CSSProperties; onClick?: () => void }) {
+  function NextArrow(props: CustomArrowProps) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -59,23 +38,24 @@ const Properties = () => {
           ...style,
           display: "block",
           position: "absolute",
+          // Responsive styles using media queries in JS
           ...responsiveStyles({
             mobile: {
               marginTop: "2.4rem",
-              right: "1rem"
+              right: "1rem",
             },
             tablet: {
               marginTop: "6.2rem",
-              right: "2.2rem"
+              right: "2.2rem",
             },
             laptop: {
               marginTop: "-8.4rem",
-              right: "1.9rem"
+              right: "1.9rem",
             },
             desktop: {
               marginTop: "6rem",
-              right: "3.1rem"
-            }
+              right: "3.1rem",
+            },
           }),
           zIndex: 1,
         }}
@@ -84,7 +64,7 @@ const Properties = () => {
     );
   }
 
-  function PrevArrow(props: { className?: string; style?: React.CSSProperties; onClick?: () => void }) {
+  function PrevArrow(props: CustomArrowProps) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -93,23 +73,24 @@ const Properties = () => {
           ...style,
           display: "block",
           position: "absolute",
+          // Responsive styles using media queries in JS
           ...responsiveStyles({
             mobile: {
               marginTop: "2.4rem",
-              left: "18.1rem"
+              left: "18.1rem",
             },
             tablet: {
               marginTop: "6.2rem",
-              left: "42.4rem"
+              left: "42.4rem",
             },
             laptop: {
               marginTop: "-8.4rem",
-              left: "47.9rem"
+              left: "47.9rem",
             },
             desktop: {
               marginTop: "6rem",
-              left: "62.2rem"
-            }
+              left: "62.2rem",
+            },
           }),
           zIndex: 1,
         }}
@@ -119,9 +100,16 @@ const Properties = () => {
   }
 
   // Helper function for responsive styles
+  type Breakpoints = {
+    mobile: Record<string, any>;
+    tablet: Record<string, any>;
+    laptop: Record<string, any>;
+    desktop: Record<string, any>;
+  };
   function responsiveStyles(breakpoints: Breakpoints) {
     if (typeof window === "undefined") return breakpoints.desktop;
     const windowWidth = window.innerWidth;
+
     if (windowWidth < 768) {
       return breakpoints.mobile;
     } else if (windowWidth >= 768 && windowWidth < 1024) {
@@ -180,7 +168,7 @@ const Properties = () => {
 
   return (
     <div
-      className={`overflow-hidden  lg:pt-[0rem] ${
+      className={`overflow-hidden lg:pt-0 ${
         isDarkMode ? "bg-black" : "bg-blue-50"
       }`}
     >
@@ -189,7 +177,7 @@ const Properties = () => {
         data-aos="fade-up"
         data-aos-duration="1200"
       >
-        <div className="max-w-7xl mx-auto px-6 pt-[3rem] pb-[0.6rem] text-center">
+        <div className="max-w-7xl mx-auto px-6 pt-12 pb-2 text-center">
           <h1 className="dm-serif-display text-blue-500 lg:text-[3.1rem] md:text-[2.1rem] text-[1.5rem] lg:leading-[2.8rem] md:leading-[1.8rem] leading-[1.4rem]">
             Properties <br />
             <span
@@ -205,14 +193,12 @@ const Properties = () => {
         <div className="max-w-6xl mx-auto lg:px-6  pt-2 pb-6">
           <Slider
             {...settings}
-            className="py-[2rem] lg:px-[0rem] overflow-hidden"
+            className="py-8 lg:px-0 overflow-hidden"
           >
-            {properties.map((property, index) => {
-              const images = normalizeImages(property.images);
-              const slug = property.slug || property.propertyName?.replace(/\s+/g, "-").replace(/-project$/i, "").toLowerCase() || "";
-              return (
+            {Array.isArray(properties) && properties.length > 0 ? (
+              properties.map((property, index) => (
                 <div
-                  key={property._id || property.propertyName || property.projectName}
+                  key={property.propertyName || property.projectName || property._id || index}
                   className="px-0 transition-all duration-500"
                   style={{
                     zIndex:
@@ -224,10 +210,8 @@ const Properties = () => {
                   }}
                 >
                   <div
-                    className={`lg:h-[20rem] md:h-[20rem] h-[10rem] lg:w-full md:w-full w-[8.7rem] flex flex-col justify-center items-center px-0 py-0 overflow-hidden lg:rounded-4xl rounded-3xl transition-all duration-500 transform ${
-                      index === activeIndex
-                        ? "scale-95 z-10"
-                        : "scale-90"
+                    className={`lg:h-80 md:h-80 h-40 lg:w-full md:w-full w-[8.7rem] flex flex-col justify-center items-center px-0 py-0 overflow-hidden lg:rounded-4xl rounded-3xl transition-all duration-500 transform ${
+                      index === activeIndex ? "scale-95 z-10" : "scale-90 "
                     } ${
                       index === activeIndex
                         ? "rotate-0 border-5 border-blue-500"
@@ -235,23 +219,24 @@ const Properties = () => {
                     }`}
                   >
                     <Link
-                      href={`/properties/${encodeURIComponent(slug)}`}
+                      href={`/properties/${encodeURIComponent(
+                        (property.propertyName || property.projectName || "property").replace(/\s+/g, "-").toLowerCase()
+                      )}`}
                       className="w-full h-full hover:scale-110 transition-all duration-500 transform"
                     >
-                      <Image
+                      <img
                         className="w-full h-full object-cover"
-                        src={images[0] || "/images/no-image-available.png"}
+                        src={Array.isArray(property.images) ? (property.images[0]?.url || property.images[0] || "/images/dehradun.avif") : "/images/dehradun.avif"}
                         alt={property.propertyName || property.projectName || "Property"}
-                        width={600}
-                        height={400}
-                        priority={index === activeIndex}
                       />
                       <div className="absolute inset-0 bg-black opacity-20 hover:opacity-0 rounded-lg"></div>
                     </Link>
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <div className="text-center w-full py-8 text-gray-500">No properties found.</div>
+            )}
           </Slider>
           {/* <div className="w-[4.4rem] h-[1.8rem] bg-white relative rounded-full bottom-[9.02rem] left-[57.2rem]"></div> */}
           {/* <div className="w-[4.5rem] h-[1.9rem] bg-white relative rounded-full lg:bottom-[7rem] md:bottom-[6.8rem] bottom-[5.5rem] lg:left-[62rem] md:left-[42rem] left-[17.8rem]"></div> */}
