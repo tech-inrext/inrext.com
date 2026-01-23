@@ -1,3 +1,10 @@
+// Type for responsive breakpoints
+type Breakpoints = {
+  mobile: React.CSSProperties;
+  tablet: React.CSSProperties;
+  laptop: React.CSSProperties;
+  desktop: React.CSSProperties;
+};
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // Properties.jsx
@@ -43,7 +50,7 @@ const Properties = () => {
   //   { id: 6, url: "/about", img: "/images/dholeraprime.jpg" },
   // ];
 
-  function NextArrow(props) {
+  function NextArrow(props: { className?: string; style?: React.CSSProperties; onClick?: () => void }) {
     const { className, style, onClick } = props;
     return (
       <div
@@ -77,7 +84,7 @@ const Properties = () => {
     );
   }
 
-  function PrevArrow(props) {
+  function PrevArrow(props: { className?: string; style?: React.CSSProperties; onClick?: () => void }) {
     const { className, style, onClick } = props;
     return (
       <div
