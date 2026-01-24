@@ -29,7 +29,7 @@ export type Property = {
   images?: { url: string }[] | string[];
 };
 
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000/api/v0";
+const BACKEND_URL = process.env.BACKEND_URL ;
 
 export const propertyService = {
   // ✅ LIST PAGE (cards, featured, etc.)

@@ -50,10 +50,8 @@ const PropertyDetails: React.FC = () => {
         if (prop?._id) {
           try {
             const subRes = await propertyService.getSubProperties(prop._id);
-            const filtered = Array.isArray(subRes?.data)
-              ? subRes.data.filter((sp: any) => sp.parentId === prop._id)
-              : [];
-            setSubProperties(filtered);
+            const subProps = Array.isArray(subRes?.data) ? subRes.data : [];
+            setSubProperties(subProps);
           } catch (err) {
             setSubProperties([]);
           }

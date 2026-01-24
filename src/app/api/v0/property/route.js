@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const CRM_PUBLIC_API =
-  process.env.CRM_PUBLIC_API || "http://localhost:3001";
+  process.env.CRM_PUBLIC_API;
 
 export async function GET(req) {
   try {
@@ -9,6 +9,8 @@ export async function GET(req) {
 
     const slug = searchParams.get("slug");
     const withChildren = searchParams.get("withChildren") === "true";
+    const parentId = searchParams.get("parentId");
+
     if (slug) {
       // Fetch single property by slug
       const crmRes = await fetch(
@@ -28,6 +30,29 @@ export async function GET(req) {
       return NextResponse.json({
         success: crmData.success !== false,
         data: crmData.data || null,
+      });
+    }
+
+    if (parentId) {
+      // Fetch sub-properties by parentId
+      const crmRes = await fetch(
+        `${CRM_PUBLIC_API}/api/v0/public/property?parentId=${encodeURIComponent(parentId)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        }
+      );
+      if (!crmRes.ok) {
+        throw new Error("CRM API failed");
+      }
+      const crmData = await crmRes.json();
+      const properties = Array.isArray(crmData?.data) ? crmData.data : [];
+      return NextResponse.json({
+        success: true,
+        data: properties,
       });
     }
 
