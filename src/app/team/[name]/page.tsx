@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTheme } from "../../content/ThemeContext";
 import Image from "next/image";
+import api from "@/services/api";
 
 const SingleTeam = () => {
   const { isDarkMode } = useTheme();
@@ -28,10 +29,10 @@ const SingleTeam = () => {
           powerhouseTeamRes,
           growthNavigatorsRes,
         ] = await Promise.all([
-          fetch("/api/v0/pillars?category=the-visionaries").then((r) => r.json()),
-          fetch("/api/v0/pillars?category=the-strategic-force").then((r) => r.json()),
-          fetch("/api/v0/pillars?category=the-powerhouse-team").then((r) => r.json()),
-          fetch("/api/v0/pillars?category=growth-navigators").then((r) => r.json()),
+          api.get("/pillars?category=the-visionaries").then((r) => r.data),
+          api.get("/pillars?category=the-strategic-force").then((r) => r.data),
+          api.get("/pillars?category=the-powerhouse-team").then((r) => r.data),
+          api.get("/pillars?category=growth-navigators").then((r) => r.data),
         ]);
         setVisionaries(Array.isArray(visionariesRes) ? visionariesRes : (Array.isArray(visionariesRes?.data) ? visionariesRes.data : []));
         setTeamMembers([
@@ -59,7 +60,10 @@ const SingleTeam = () => {
       }
     };
     checkScreenSize();
-    return () => window.removeEventListener("resize", checkScreenSize);
+window.addEventListener("resize", checkScreenSize);
+
+return () => window.removeEventListener("resize", checkScreenSize);
+
   }, []);
 
   // useEffect(() => {
@@ -69,8 +73,8 @@ const SingleTeam = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await fetch("/api/v0/pillars?category");
-        const data = await res.json();
+        const res = await api.get("/pillars?category");
+        const data = res.data;
         if (data.success && Array.isArray(data.data)) {
           setProperties(data.data);
         }
