@@ -7,7 +7,7 @@ export async function GET(req: Request) {
     const category = searchParams.get("category") || "";
 
     // Use environment variable or fallback
-    const CRM_BASE = process.env.CRM_API_BASE;
+    const CRM_BASE = process.env.CRM_API_BASE || "http://localhost:3000";
 
     const res = await fetch(
       `${CRM_BASE}/api/v0/public/pillar${category ? `?category=${category}` : ""}`,

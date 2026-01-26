@@ -73,7 +73,7 @@ export const propertyService = {
   // ✅ SUB-PROPERTIES PAGE (fetch child properties by parent ID)
   getSubProperties: async (parentId: string): Promise<any> => {
     try {
-      const res = await axios.get(`/api/v0/property?parentId=${parentId}`);
+      const res = await api.get(`/property?parentId=${parentId}`);
       return res.data ?? { data: [] };
     } catch (error) {
       console.error("Sub-Properties Fetch Error:", error);

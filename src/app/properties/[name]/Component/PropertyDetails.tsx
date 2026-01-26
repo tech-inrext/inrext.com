@@ -41,7 +41,7 @@ const PropertyDetails: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch property by slug
-        const prop = await propertyService.fetchPropertyBySlug(slug);
+        const prop = await propertyService.fetchPropertyBySlug(slug , true);
         if (!isMounted) return;
         setProperty(prop);
         setPropertyId(prop?._id || null);
@@ -369,10 +369,10 @@ const PropertyDetails: React.FC = () => {
                                 child.slug || child.name || child.projectName;
                               if (childKey) {
                                 try {
-                                  const res = await fetch(
+                                  const result = await api.get(
                                     `/api/v0/public/property/${encodeURIComponent(childKey)}`
                                   );
-                                  const result = await res.json();
+                                   
                                   let data = result.data || result;
                                   setChildDetails(data);
                                   let imgs = normalizeImages(data.images);
