@@ -10,7 +10,7 @@ export async function GET(req: Request) {
     const CRM_BASE = process.env.CRM_API_BASE || "http://localhost:3000";
 
     const res = await fetch(
-      `${CRM_BASE}/api/v0/public/pillar${category ? `?category=${category}` : ""}`,
+      `${CRM_BASE}/api/v0/public/pillars${category ? `?category=${category}` : ""}`,
       {
         method: "GET",
         headers: {
