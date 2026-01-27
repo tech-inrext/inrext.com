@@ -26,7 +26,7 @@ const Properties = () => {
           ? data.filter(
               (p) =>
                 p.isFeatured === true ||
-                (typeof p.isFeatured === "string" && p.isFeatured.trim().toLowerCase() === "true")
+                (typeof p.isFeatured === "string" && (p.isFeatured as string).trim().toLowerCase() === "true")
             )
           : [];
         setProperties(filtered);
