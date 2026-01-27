@@ -19,8 +19,17 @@ const Properties = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const data = await propertyService.fetchProperties();
-        setProperties(Array.isArray(data) ? data : []);
+        // Fetch only featured properties, limit 100
+        const data = await propertyService.fetchProperties({ featured: "true", limit: "100" });
+        // Accept both boolean and string 'true' for isFeatured
+        const filtered = Array.isArray(data)
+          ? data.filter(
+              (p) =>
+                p.isFeatured === true ||
+                (typeof p.isFeatured === "string" && p.isFeatured.trim().toLowerCase() === "true")
+            )
+          : [];
+        setProperties(filtered);
       } catch (error) {
         console.error("Failed to fetch properties:", error);
         setProperties([]);
@@ -219,9 +228,17 @@ const Properties = () => {
                     }`}
                   >
                     <Link
-                      href={`/properties/${encodeURIComponent(
-                        (property.propertyName || property.projectName || "property").replace(/\s+/g, "-").toLowerCase()
-                      )}`}
+                      href={`/properties/${
+                        property.slug
+                          ? encodeURIComponent(property.slug)
+                          : encodeURIComponent(
+                              (property.propertyName || property.projectName || "property")
+                                .replace(/\s+/g, "-")
+                                .replace(/&/g, "and")
+                                .replace(/[^a-zA-Z0-9-]/g, "")
+                                .toLowerCase()
+                            )
+                      }`}
                       className="w-full h-full hover:scale-110 transition-all duration-500 transform"
                     >
                       <img
