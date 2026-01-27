@@ -357,50 +357,68 @@ const PropertyDetails: React.FC = () => {
                           </div>
                         </div>
                         <div className="mt-2">
-                          <button
-                            className="text-blue-600 font-semibold flex items-center  hover:underline text-md"
-                            onClick={async () => {
-                              setShowChildModal(true);
-                              setChildLoading(true);
-                              setChildDetails(null);
-                              setChildImages([]);
-                              // Fetch child property details from backend
-                              let childKey =
-                                child.slug || child.name || child.projectName;
-                              if (childKey) {
-                                try {
-                                  const result = await api.get(
-                                    `/api/v0/public/property/${encodeURIComponent(childKey)}`
-                                  );
-                                   
-                                  let data = result.data || result;
-                                  setChildDetails(data);
-                                  let imgs = normalizeImages(data.images);
-                                  if (imgs.length === 0)
-                                    imgs = ["/images/no-image-available.png"];
-                                  setChildImages(imgs);
-                                } catch (err) {
-                                  setChildDetails(null);
-                                  setChildImages([
-                                    "/images/no-image-available.png",
-                                  ]);
-                                }
-                              }
-                              setChildLoading(false);
-                            }}
-                          >
-                            View More Details
-                            <svg
-                              width="18"
-                              height="18"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                          </button>
+                        <button
+  className="text-blue-600 font-semibold flex items-center hover:underline text-md"
+  onClick={async () => {
+    setShowChildModal(true);
+    setChildLoading(true);
+    setChildDetails(null);
+    setChildImages([]);
+
+    const childKey =
+      child.slug || child.name || child.projectName;
+
+    if (!childKey || !propertyId) {
+      setChildLoading(false);
+      return;
+    }
+
+    try {
+      const result = await api.get(
+        `/public/property?parentId=${propertyId}&slug=${childKey}`
+      );
+
+      // ✅ ALWAYS normalize backend response
+      const payload = result.data;
+
+      const childData =
+        Array.isArray(payload?.data) && payload.data.length > 0
+          ? payload.data[0]
+          : payload?.data || null;
+
+      if (!childData) {
+        throw new Error("No child property found");
+      }
+
+      setChildDetails(childData);
+
+      let imgs = normalizeImages(childData.images || []);
+      if (imgs.length === 0) {
+        imgs = ["/images/no-image-available.png"];
+      }
+      setChildImages(imgs);
+    } catch (error) {
+      console.error("Child property fetch error:", error);
+      setChildDetails(null);
+      setChildImages(["/images/no-image-available.png"]);
+    } finally {
+      setChildLoading(false);
+    }
+  }}
+>
+  View More Details
+  <svg
+    width="18"
+    height="18"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path d="M5 12h14M12 5l7 7-7 7" />
+  </svg>
+</button>
+
                         </div>
                       </div>
                     </div>
