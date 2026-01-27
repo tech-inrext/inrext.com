@@ -29,7 +29,7 @@ export type Property = {
   images?: { url: string }[] | string[];
 };
 
-const BACKEND_URL = process.env.BACKEND_URL ;
+const BACKEND_URL = process.env.BACKEND_URL;
 
 export const propertyService = {
   // ✅ LIST PAGE (cards, featured, etc.)
@@ -55,12 +55,17 @@ export const propertyService = {
   // ✅ DETAILS PAGE (slug-based, FIXES sizeUnit/minSize issue)
   fetchPropertyBySlug: async (
     slug: string,
-    withChildren = false,
+    withChildren = true,
   ): Promise<Property | null> => {
     if (!slug) return null;
 
     try {
-      console.log("Fetching property for slug:", slug, "withChildren:", withChildren);
+      console.log(
+        "Fetching property for slug:",
+        slug,
+        "withChildren:",
+        withChildren,
+      );
       const res = await api.get(`/public/property/${slug}`);
 
       return res.data?.success ? res.data.data : null;
@@ -73,7 +78,7 @@ export const propertyService = {
   // ✅ SUB-PROPERTIES PAGE (fetch child properties by parent ID)
   getSubProperties: async (parentId: string): Promise<any> => {
     try {
-      const res = await api.get(`/property?parentId=${parentId}`);
+      const res = await api.get(`/public/property?parentId=${parentId}`);
       return res.data ?? { data: [] };
     } catch (error) {
       console.error("Sub-Properties Fetch Error:", error);
