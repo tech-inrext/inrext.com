@@ -212,15 +212,15 @@ const Footer: React.FC = () => {
                   <span className="text-[1.2rem]">
                     <MdOutlineLocationOn className="text-white text-4xl" />
                   </span>
-                  3rd Floor, D-4, D Block, Sector-10,
+                  Headquaters: 3rd Floor, D-4, D Block, 
                   <br />
-                  Noida, Uttar Pradesh, 201301
+                  Sector-10, Noida, Uttar Pradesh, 201301
                 </li>
                 <li className="flex items-center gap-2 ">
                   <span className="text-[1.2rem]">
                     <MdOutlineLocationOn className="text-white text-4xl" />
                   </span>
-                  4th floor, Pandey Plaza, Exhibition Rd,
+                  Branch: 4th floor, Pandey Plaza, Exhibition Rd,
                   <br />
                   Ali Nagar Colony, Salimpur Ahra, Golambar,
                   <br />
@@ -230,7 +230,7 @@ const Footer: React.FC = () => {
                   <span className="text-[1.2rem]">
                     <MdOutlineLocationOn className="text-white text-4xl" />
                   </span>
-                  312, Felix Sq Rd, Golf City,
+                  Branch: 312, Felix Sq Rd, Golf City,
                   <br />
                   Lucknow, Muzaffar Nagar Ghusval,
                   <br />

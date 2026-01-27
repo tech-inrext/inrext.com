@@ -7,7 +7,7 @@ import { propertyService } from "../../../../services/propertyService";
 import { MdOutlineArrowOutward, MdOutlineCurrencyRupee } from "react-icons/md";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-const MapView = dynamic(() => import("../../MapView"), { ssr: false });
+const MapView = dynamic(() => import("../MapView"), { ssr: false });
 import type { Property } from "../../../../services/propertyService";
 import api from "@/services/api";
 

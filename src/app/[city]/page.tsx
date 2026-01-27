@@ -16,57 +16,55 @@ export default function CityPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-useEffect(() => {
-  if (!city) return;
-
-  let isMounted = true;
-
-  const fetchCityProperties = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // ✅ fetchProperties RETURNS Property[]
-      const list = await propertyService.fetchProperties({
-        featured: "true",
-        limit: "100",
-      });
-
-      const cityParam = String(city)
-        .toLowerCase()
-        .replace(/\s+/g, "");
-
-      const filtered = list.filter((prop) => {
-        const locationStr = Array.isArray(prop.location)
-          ? prop.location.join(" ").toLowerCase()
-          : typeof prop.location === "string"
-          ? prop.location.toLowerCase()
-          : "";
-
-        return locationStr.replace(/\s+/g, "").includes(cityParam);
-      });
-
-      if (isMounted) {
-        setProperties(filtered);
+  useEffect(() => {
+    if (!city) return;
+    let isMounted = true;
+    const fetchCityProperties = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const list = await propertyService.fetchProperties({
+          featured: "true",
+          limit: "100",
+        });
+        const cityParam = String(city).toLowerCase().replace(/\s+/g, "");
+        // Accept both boolean and string 'true' for isFeatured
+        const filtered = list.filter((prop) => {
+          let isFeatured = false;
+          if (typeof prop.isFeatured === "boolean") {
+            isFeatured = prop.isFeatured === true;
+          } else if (typeof prop.isFeatured === "string") {
+            isFeatured = (prop.isFeatured as string).trim().toLowerCase() === "true";
+          }
+          if (!isFeatured) return false;
+          // Robust location matching
+          let locationStr = "";
+          if (Array.isArray(prop.location)) {
+            locationStr = prop.location.join(" ").toLowerCase();
+          } else if (typeof prop.location === "string") {
+            locationStr = prop.location.toLowerCase();
+          }
+          return locationStr.replace(/\s+/g, "").includes(cityParam);
+        });
+        if (isMounted) {
+          setProperties(filtered);
+        }
+      } catch (error) {
+        console.error("Failed to fetch properties:", error);
+        if (isMounted) {
+          setError("Failed to fetch properties");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      console.error("Failed to fetch properties:", error);
-      if (isMounted) {
-        setError("Failed to fetch properties");
-      }
-    } finally {
-      if (isMounted) {
-        setLoading(false);
-      }
-    }
-  };
-
-  fetchCityProperties();
-
-  return () => {
-    isMounted = false;
-  };
-}, [city]);
+    };
+    fetchCityProperties();
+    return () => {
+      isMounted = false;
+    };
+  }, [city]);
 
 
 
@@ -126,13 +124,20 @@ useEffect(() => {
             </div>
           )}
           {properties.map((prop) => {
-            // Inline PropertyCard for backend data
-            const nameSlug = encodeURIComponent((prop.projectName || '').replace(/\s+/g, "-").toLowerCase());
-            const citySlug = (city as string).toLowerCase().replace(/\s+/g, "-");
+            // Use the correct slug for property page links
+            const propertySlug = prop.slug
+              ? encodeURIComponent(prop.slug)
+              : encodeURIComponent(
+                  (prop.projectName || "")
+                    .replace(/\s+/g, "-")
+                    .replace(/&/g, "and")
+                    .replace(/[^a-zA-Z0-9-]/g, "")
+                    .toLowerCase()
+                );
             return (
               <Link
                 key={prop._id || prop.slug || prop.projectName}
-                href={`/${citySlug}/${nameSlug}`}
+                href={`/properties/${propertySlug}`}
                 className={`flex flex-col sm:flex-row p-2 gap-4 rounded-xl overflow-hidden hover:scale-105 transition-transform duration-300 shadow ${
                   isDarkMode ? "bg-[#181818]" : "bg-white"
                 }`}

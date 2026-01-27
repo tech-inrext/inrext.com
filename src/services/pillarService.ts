@@ -1,23 +1,17 @@
+import api from "./api";
+
 export async function fetchPillarsByCategory(category: string) {
   try {
-    const res = await fetch(
-      `/api/v0/pillars?category=${encodeURIComponent(category)}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    const res = await api.get(
+      `/pillars?category=${encodeURIComponent(category)}`
     );
 
-    const result = await res.json();
-
-    if (!result.success) {
-      console.error("Pillars API error:", result.message);
+    if (!res) {
+      console.error("Pillars API error:", res);
       return [];
     }
 
-    return result.data || [];
+    return res.data || [];
   } catch (error) {
     console.error("Failed to fetch pillars:", error);
     return [];
