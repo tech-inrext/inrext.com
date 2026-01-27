@@ -30,7 +30,12 @@ export default function CityPage() {
         const cityParam = String(city).toLowerCase().replace(/\s+/g, "");
         // Accept both boolean and string 'true' for isFeatured
         const filtered = list.filter((prop) => {
-          const isFeatured = prop.isFeatured === true || prop.isFeatured === "true";
+          let isFeatured = false;
+          if (typeof prop.isFeatured === "boolean") {
+            isFeatured = prop.isFeatured === true;
+          } else if (typeof prop.isFeatured === "string") {
+            isFeatured = (prop.isFeatured as string).trim().toLowerCase() === "true";
+          }
           if (!isFeatured) return false;
           // Robust location matching
           let locationStr = "";
