@@ -16,8 +16,8 @@ export type Property = {
   price?: string;
   minPrice?: number | string;
 
-  minSize?: string;
-  maxSize?: string;
+  minSize?:number | string;
+  maxSize?: number | string;
   sizeUnit?: string;
 
   location?: string | string[];
