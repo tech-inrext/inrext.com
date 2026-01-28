@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "@types/mongodb": "^4.0.6",
     "aos": "^2.3.4",
-    "axios": "^1.11.0",
+    "axios": "^1.13.4",
     "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
