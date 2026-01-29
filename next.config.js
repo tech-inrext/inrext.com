@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/api/v0/public/:path*',
-        destination: 'https://staging.inrext.com/api/v0/public/:path*',
+        destination: 'https://dashboard.inrext.com/api/v0/public/:path*',
       },
     ];
   },
