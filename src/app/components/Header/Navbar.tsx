@@ -603,19 +603,38 @@ const Header: React.FC = () => {
               "Careers",
               "Journey",
               "Contact",
+              "Login"
             ].map((item) => (
-              <Link
-                key={item}
-                href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                className={`block py-2 px-5 mx-5 rounded-full text-base font-semibold ${
-                  isDarkMode
-                    ? " text-white hover:border hover:border-blue-500"
-                    : "text-gray-900 hover:bg-gray-50"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item}
-              </Link>
+              item === "Login" ? (
+                <button
+                  key={item}
+                  type="button"
+                  className={`block w-full text-left py-2 px-5 mx-5 rounded-full text-base font-semibold ${
+                    isDarkMode
+                      ? " text-white hover:border hover:border-blue-500"
+                      : "text-gray-900 hover:bg-gray-50"
+                  }`}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.location.href = "https://dashboard.inrext.com/";
+                  }}
+                >
+                  {item}
+                </button>
+              ) : (
+                <Link
+                  key={item}
+                  href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                  className={`block py-2 px-5 mx-5 rounded-full text-base font-semibold ${
+                    isDarkMode
+                      ? " text-white hover:border hover:border-blue-500"
+                      : "text-gray-900 hover:bg-gray-50"
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              )
             ))}
           </div>
         </DialogPanel>

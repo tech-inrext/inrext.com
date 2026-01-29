@@ -166,7 +166,7 @@ const VisitingCardPage: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: "#0096FF",
+        bgcolor: "#242424",
         py: { xs: 2, md: 4 },
         display: "flex",
         alignItems: "center",
@@ -203,7 +203,7 @@ const VisitingCardPage: React.FC = () => {
                       left: 0,
                       width: "100%",
                       height: "100%",
-                      backgroundImage: "url(/images/digital-visiting-card_BG.jpg)",
+                      backgroundImage: "url(https://inrext.s3.ap-south-1.amazonaws.com/Static+Assets/digital-visiting-card_BG.jpg)",
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       "&::after": {
@@ -234,7 +234,7 @@ const VisitingCardPage: React.FC = () => {
                     {/* Logo */}
                     <Box
                       sx={{
-                        pt: 2.5,
+                        pt: 4,
                         px: 3,
                         textAlign: "center",
                         zIndex: 2,
@@ -243,7 +243,7 @@ const VisitingCardPage: React.FC = () => {
                       <img
                         src="/images/inrext-white-logo.png"
                         alt="Inrext Logo"
-                        style={{ height: 28 }}
+                        style={{ height: 25 }}
                       />
                     </Box>
 
@@ -315,12 +315,13 @@ const VisitingCardPage: React.FC = () => {
                           position: "relative",
                           zIndex: 2,
                           mt: 2,
-                          fontSize: "1rem",
+                          fontSize: "0.9rem",
                           fontWeight: 700,
                           textTransform: "uppercase",
                           px: 2,
                           textAlign: "center",
                           whiteSpace: "pre-line",
+                          lineHeight: 1.2,
                         }}
                       >
                         {user?.name
@@ -335,7 +336,7 @@ const VisitingCardPage: React.FC = () => {
                       sx={{
                         textAlign: "center",
                         px: 3,
-                        mt: "-10rem",
+                        mt: "-8rem",
                       }}
                     >
                       {/* Designation with Briefcase Icon */}
@@ -405,8 +406,8 @@ const VisitingCardPage: React.FC = () => {
                       sx={{
                         display: "flex",
                         justifyContent: "center",
-                        gap: 2.5,
-                        mt: 8,
+                        gap: 2,
+                        mt: 5,
                         px: 3,
                       }}
                     >
@@ -417,8 +418,8 @@ const VisitingCardPage: React.FC = () => {
                           sx={{
                             bgcolor: "white",
                             color: "#333",
-                            width: 58,
-                            height: 58,
+                            width: 50,
+                            height: 50,
                             "&:hover": {
                               bgcolor: "rgba(255, 255, 255, 0.9)",
                               transform: "translateY(-3px)",
@@ -440,8 +441,8 @@ const VisitingCardPage: React.FC = () => {
                           sx={{
                             bgcolor: "white",
                             color: "#333",
-                            width: 58,
-                            height: 58,
+                            width: 50,
+                            height: 50,
                             "&:hover": {
                               bgcolor: "rgba(255, 255, 255, 0.9)",
                               transform: "translateY(-3px)",
@@ -461,8 +462,8 @@ const VisitingCardPage: React.FC = () => {
                           sx={{
                             bgcolor: "white",
                             color: "#333",
-                            width: 58,
-                            height: 58,
+                            width: 50,
+                            height: 50,
                             "&:hover": {
                               bgcolor: "rgba(255, 255, 255, 0.9)",
                               transform: "translateY(-3px)",
@@ -483,8 +484,8 @@ const VisitingCardPage: React.FC = () => {
                         sx={{
                           bgcolor: "white",
                           color: "#333",
-                          width: 58,
-                          height: 58,
+                          width: 50,
+                          height: 50,
                           "&:hover": {
                             bgcolor: "rgba(255, 255, 255, 0.9)",
                             transform: "translateY(-3px)",
@@ -501,7 +502,7 @@ const VisitingCardPage: React.FC = () => {
                     <Box
                       sx={{
                         mt: "auto",
-                        pb: 3.5,
+                        pb: 6,
                         px: 3,
                         textAlign: "center",
                       }}
@@ -510,7 +511,7 @@ const VisitingCardPage: React.FC = () => {
                         sx={{
                           opacity: 0.9,
                           fontSize: "0.875rem",
-                          lineHeight: 1.7,
+                          lineHeight: 1.2,
                           letterSpacing: "0.02em",
                         }}
                       >

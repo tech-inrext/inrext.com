@@ -31,7 +31,7 @@ export async function GET(
     }
 
     // Forward the request to your actual backend on port 3000
-    const backendUrl = `http://localhost:3000/api/v0/public/employee/${id}`;
+    const backendUrl = `https://staging.inrext.com/api/v0/public/employee/${id}`;
     console.log("📡 Fetching from backend:", backendUrl);
 
     const response = await fetch(backendUrl, {
