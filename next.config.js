@@ -17,10 +17,14 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
     return [
       {
         source: '/api/v0/public/:path*',
-        destination: 'https://dashboard.inrext.com/api/v0/public/:path*',
+        destination: isDevelopment
+          ? 'http://localhost:3000/api/v0/public/:path*'
+          : 'https://dashboard.inrext.com/api/v0/public/:path*',
       },
     ];
   },
