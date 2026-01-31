@@ -29,8 +29,53 @@ interface VisitingCardContentProps {
   user: User;
 }
 
+// Phone formatter utility function
+const formatPhoneForWhatsApp = (phone?: string): string => {
+  if (!phone) return '';
+  
+  // Remove all non-digit characters
+  const digitsOnly = phone.replace(/\D/g, '');
+  
+  // Handle Indian numbers (10 digits)
+  if (digitsOnly.length === 10) {
+    return `+91${digitsOnly}`;
+  }
+  
+  // Handle numbers with country code but without + (12 digits for India)
+  if (digitsOnly.length === 12 && digitsOnly.startsWith('91')) {
+    return `+${digitsOnly}`;
+  }
+  
+  // If already has +, return as is
+  if (phone.startsWith('+')) {
+    return phone;
+  }
+  
+  // Default: add + for international format
+  return `+${digitsOnly}`;
+};
+
+// Format for display
+const formatPhoneForDisplay = (phone?: string): string => {
+  if (!phone) return '';
+  const formatted = formatPhoneForWhatsApp(phone);
+  
+  // Format for display: +91 XXXXX XXXXX
+  if (formatted.startsWith('+91') && formatted.length === 13) {
+    return `${formatted.substring(0, 3)} ${formatted.substring(3, 8)} ${formatted.substring(8)}`;
+  }
+  
+  return phone;
+};
+
 const VisitingCardContent: React.FC<VisitingCardContentProps> = ({ user }) => {
+  // Use altPhone if available, otherwise phone
   const whatsappNumber = user?.altPhone || user?.phone;
+  // Format for WhatsApp
+  const formattedWhatsAppNumber = formatPhoneForWhatsApp(whatsappNumber);
+  // Format for display
+  const displayPhone = formatPhoneForDisplay(user?.phone);
+  const displayAltPhone = formatPhoneForDisplay(user?.altPhone);
 
   return (
     <Box id="visiting-card">
@@ -255,10 +300,10 @@ const VisitingCardContent: React.FC<VisitingCardContentProps> = ({ user }) => {
               </IconButton>
             )}
 
-            {whatsappNumber && (
+{formattedWhatsAppNumber && (
               <IconButton
                 component="a"
-                href={`https://wa.me/${whatsappNumber}`}
+                href={`https://wa.me/${formattedWhatsAppNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{
