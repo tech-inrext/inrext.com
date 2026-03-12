@@ -17,7 +17,7 @@ async function getEmployee(id: string) {
     if (data.success) return data.data;
     return null;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching employee:", error);
     return null;
   }
 }
@@ -26,30 +26,54 @@ export async function generateMetadata(
   { params }: PageProps
 ): Promise<Metadata> {
 
-  const id = params.id;
+  const { id } = params;
   const user = await getEmployee(id);
 
   const baseUrl = "https://staging.inrext.com";
 
+  // fallback image
+  const defaultImage = `${baseUrl}/default-card.png`;
+
   if (!user) {
     return {
+      metadataBase: new URL(baseUrl),
+
       title: "Digital Visiting Card | Inrext",
       description: "View employee digital visiting card",
+
       openGraph: {
         title: "Digital Visiting Card | Inrext",
         description: "View employee digital visiting card",
         url: `${baseUrl}/visiting-card/${id}`,
-        images: [`${baseUrl}/default-card.png`],
+        siteName: "Inrext",
+        images: [
+          {
+            url: defaultImage,
+            width: 1200,
+            height: 630,
+          },
+        ],
+        type: "website",
+      },
+
+      twitter: {
+        card: "summary_large_image",
+        title: "Digital Visiting Card | Inrext",
+        description: "View employee digital visiting card",
+        images: [defaultImage],
       },
     };
   }
 
+  // Ensure photo URL is absolute
   const photoUrl =
-    user.photo?.startsWith("http")
+    user.photo && user.photo.startsWith("http")
       ? user.photo
-      : `${baseUrl}${user.photo}`;
+      : `${baseUrl}${user.photo || "/default-card.png"}`;
 
   return {
+    metadataBase: new URL(baseUrl),
+
     title: `${user.name} | ${user.designation}`,
     description: user.specialization || "Digital visiting card",
 
@@ -57,7 +81,14 @@ export async function generateMetadata(
       title: `${user.name} | ${user.designation}`,
       description: user.specialization || "Digital visiting card",
       url: `${baseUrl}/visiting-card/${id}`,
-      images: [photoUrl],
+      siteName: "Inrext",
+      images: [
+        {
+          url: photoUrl,
+          width: 1200,
+          height: 630,
+        },
+      ],
       type: "profile",
     },
 
