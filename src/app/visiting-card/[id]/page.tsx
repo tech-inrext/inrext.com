@@ -1,9 +1,14 @@
 import { Metadata } from "next";
 import VisitingCardPageClient from "../VisitingCardPageClient";
 
+interface PageProps {
+  params: { id: string };
+}
+
 async function getEmployee(id: string) {
   try {
     const res = await fetch(
+      
       `${process.env.NEXT_PUBLIC_API_URL}/api/v0/public/employee/${id}`,
       { cache: "no-store" }
     );
@@ -17,7 +22,9 @@ async function getEmployee(id: string) {
   }
 }
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: PageProps
+): Promise<Metadata> {
   const user = await getEmployee(params.id);
 
   if (!user) {
@@ -33,7 +40,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     openGraph: {
       title: `${user.name} | ${user.designation}`,
       description: `${user.specialization || ""}`,
-      url: `https://inrext.com/visiting-card/${params.id}`,
+      url: `https://www.inrext.com/visiting-card/${params.id}`,
       siteName: "Inrext",
       images: [
         {
@@ -47,6 +54,6 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   };
 }
 
-export default function Page({ params }: any) {
+export default function Page({ params }: PageProps) {
   return <VisitingCardPageClient id={params.id} />;
 }
