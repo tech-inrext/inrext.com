@@ -36,9 +36,13 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <Alert severity="error" sx={{ mb: 2 }}>
           {error || "User not found"}
         </Alert>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          Employee ID: <strong>{id}</strong>
-        </Typography>
+
+        {id && (
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+            Employee ID: <strong>{id}</strong>
+          </Typography>
+        )}
+
         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
           <Button
             variant="contained"
@@ -47,6 +51,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
           >
             Try Again
           </Button>
+
           <Button
             variant="outlined"
             onClick={onGoHome}

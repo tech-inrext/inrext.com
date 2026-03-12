@@ -26,20 +26,21 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        if (!id) {
-          setError("No employee ID provided");
-          return;
-        }
+        const apiUrl = `/api/v0/public/employee/${id}`;
 
-         const apiUrl = `/api/v0/public/employee/${id}`;
         const response = await axios.get(apiUrl, {
           headers: {
-            'Cache-Control': 'no-cache',
+            "Cache-Control": "no-cache",
           },
         });
 
@@ -50,9 +51,15 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
         }
       } catch (error: any) {
         if (error.response) {
-          setError(`Server error: ${error.response.status} - ${error.response.data?.error || error.message}`);
+          setError(
+            `Server error: ${error.response.status} - ${
+              error.response.data?.error || error.message
+            }`
+          );
         } else if (error.request) {
-          setError("Unable to reach the server. Please check your internet connection.");
+          setError(
+            "Unable to reach the server. Please check your internet connection."
+          );
         } else {
           setError(error.message || "Failed to load employee data");
         }
@@ -61,12 +68,7 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
       }
     };
 
-    if (id) {
-      fetchUserData();
-    } else {
-      setError("Please provide an employee ID in the URL");
-      setLoading(false);
-    }
+    fetchUserData();
   }, [id]);
 
   return { user, loading, error };

@@ -26,14 +26,7 @@ async function getEmployeeData(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const id = params?.id;
-
-  if (!id) {
-    return {
-      title: "Visiting Card",
-      description: "Digital Visiting Card",
-    };
-  }
+  const id = params.id;
 
   const user = await getEmployeeData(id);
 
@@ -44,10 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-const profileImage =
-  user?.profileImage && user.profileImage.startsWith("http")
-    ? user.profileImage
-    : "https://staging.inrext.com/default-profile.png";
+  const profileImage =
+    user?.profileImage && user.profileImage.startsWith("http")
+      ? user.profileImage
+      : "https://staging.inrext.com/default-profile.png";
 
   const url = `https://staging.inrext.com/visiting-card/${id}`;
 
@@ -80,7 +73,5 @@ const profileImage =
 }
 
 export default function Page({ params }: Props) {
-  const id = params?.id;
-
-  return <VisitingCardClient id={id} />;
+  return <VisitingCardClient id={params.id} />;
 }
