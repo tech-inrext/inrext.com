@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 import useEmployeeData from "../useEmployeeData";
 import VisitingCardSkeleton from "../VisitingCardSkeleton";
@@ -43,13 +43,13 @@ const VisitingCardClient: React.FC<Props> = ({ id }) => {
         }}
       >
         <Container maxWidth="lg">
-          <Grid2 container justifyContent="center">
-            <Grid2 xs={12} md={6} lg={4}>
+          <Grid container justifyContent="center">
+            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
               <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
                 <VisitingCardSkeleton />
               </Paper>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
     );
@@ -78,13 +78,13 @@ const VisitingCardClient: React.FC<Props> = ({ id }) => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid2 container justifyContent="center">
-          <Grid2 xs={12} md={6} lg={4}>
+        <Grid container justifyContent="center">
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
               <VisitingCardContent user={user} />
             </Paper>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   );
