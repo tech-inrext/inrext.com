@@ -22,47 +22,29 @@ interface UseEmployeeDataResult {
 
 const useEmployeeData = (id: string): UseEmployeeDataResult => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
 
     const fetchUserData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const apiUrl = `/api/v0/public/employee/${id}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`;
 
-        const response = await axios.get(apiUrl, {
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        });
+        const response = await axios.get(apiUrl);
 
-        if (response.data.success && response.data.data) {
-          setUser(response.data.data);
+        if (response.data) {
+          setUser(response.data);
         } else {
-          setError(response.data.error || "Employee not found");
+          setError("Employee not found");
         }
-      } catch (error: any) {
-        if (error.response) {
-          setError(
-            `Server error: ${error.response.status} - ${
-              error.response.data?.error || error.message
-            }`
-          );
-        } else if (error.request) {
-          setError(
-            "Unable to reach the server. Please check your internet connection."
-          );
-        } else {
-          setError(error.message || "Failed to load employee data");
-        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load employee data");
       } finally {
         setLoading(false);
       }
