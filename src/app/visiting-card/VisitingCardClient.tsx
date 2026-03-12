@@ -8,10 +8,10 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 
-import useEmployeeData from "../useEmployeeData";
-import VisitingCardSkeleton from "../VisitingCardSkeleton";
-import ErrorDisplay from "../ErrorDisplay";
-import VisitingCardContent from "../VisitingCardContent";
+import useEmployeeData from "./useEmployeeData";
+import VisitingCardSkeleton from "./VisitingCardSkeleton";
+import ErrorDisplay from "./ErrorDisplay";
+import VisitingCardContent from "./VisitingCardContent";
 
 interface Props {
   id: string;

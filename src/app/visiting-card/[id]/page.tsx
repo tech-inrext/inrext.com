@@ -1,9 +1,10 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import VisitingCardClient from "./VisitingCardClient";
+import VisitingCardClient from "../VisitingCardClient";
 
 type Props = {
-  params: { id: string };
+  params: {
+    id: string;
+  };
 };
 
 async function getEmployeeData(id: string) {
@@ -25,14 +26,16 @@ async function getEmployeeData(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  if (!params?.id) {
+  const id = params?.id;
+
+  if (!id) {
     return {
       title: "Visiting Card",
       description: "Digital Visiting Card",
     };
   }
 
-  const user = await getEmployeeData(params.id);
+  const user = await getEmployeeData(id);
 
   if (!user) {
     return {
@@ -41,11 +44,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const profileImage =
-    user.profileImage ||
-    "https://staging.inrext.com/default-profile.png";
+const profileImage =
+  user?.profileImage && user.profileImage.startsWith("http")
+    ? user.profileImage
+    : "https://staging.inrext.com/default-profile.png";
 
-  const url = `https://staging.inrext.com/visiting-card/${params.id}`;
+  const url = `https://staging.inrext.com/visiting-card/${id}`;
 
   return {
     title: `${user.name} | ${user.designation}`,
@@ -76,9 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function Page({ params }: Props) {
-  if (!params?.id) {
-    notFound(); // show 404 page if no ID
-  }
+  const id = params?.id;
 
-  return <VisitingCardClient id={params.id} />;
+  return <VisitingCardClient id={id} />;
 }
