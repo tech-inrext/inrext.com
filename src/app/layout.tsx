@@ -3,6 +3,7 @@ import React from "react";
 import { ThemeProvider } from "./content/ThemeContext";
 import Navbar from "./components/Header/Navbar";
 import Footer from "./components/footer/Footer";
+import LayoutWrapper from "./LayoutWrapper";
 import WhatsAppButton from "./whatsappbutton/page";
 
 export const metadata = {
@@ -49,13 +50,11 @@ export default function RootLayout({
         {/* Head is now empty; fonts and favicon are in _document.js */}
       </head>
       <body className="min-h-screen antialiased bg-blue-50">
-        <ThemeProvider>
-          {/* Navbar and Footer must be client components */}
-          <Navbar />
-          {children}
-          <Footer />
-          <WhatsAppButton />
+        {/* <ThemeProvider> */}
+         <ThemeProvider>
+          <LayoutWrapper>{children}</LayoutWrapper>
         </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
