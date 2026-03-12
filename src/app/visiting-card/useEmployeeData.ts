@@ -36,7 +36,7 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
           return;
         }
 
-        const apiUrl = `/api/v0/public/employee/${id}`;
+         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v0/public/employee/${id}`;
         const response = await axios.get(apiUrl, {
           headers: {
             'Cache-Control': 'no-cache',
