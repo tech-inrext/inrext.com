@@ -33,7 +33,7 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
         setLoading(true);
         setError(null);
 
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/public/employee/${id}`;
 
         const response = await axios.get(apiUrl);
 
