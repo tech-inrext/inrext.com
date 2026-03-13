@@ -1,93 +1,77 @@
-"use client";
+import { Metadata } from "next";
+import VisitingCardClient from "./VisitingCardClient";
 
-import React from "react";
-import { useParams, useRouter } from "next/navigation";
-
-// MUI Imports
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Grid2 from "@mui/material/Grid";
-
-// Custom Components
-import useEmployeeData from "../useEmployeeData";
-import VisitingCardSkeleton from "../VisitingCardSkeleton";
-import ErrorDisplay from "../ErrorDisplay";
-import VisitingCardContent from "../VisitingCardContent";
-
-const VisitingCardPage: React.FC = () => {
-  const params = useParams();
-  const router = useRouter();
-  const id = params?.id as string;
-
-  const { user, loading, error } = useEmployeeData(id);
-
-  const handleRetry = () => {
-    window.location.reload();
-  };
-
-  const handleGoHome = () => {
-    router.push("/");
-  };
-
-  if (loading) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          bgcolor: "#242424",
-          py: { xs: 2, md: 4 },
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid2 container justifyContent="center">
-            <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
-              <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
-                <VisitingCardSkeleton />
-              </Paper>
-            </Grid2>
-          </Grid2>
-        </Container>
-      </Box>
-    );
-  }
-
-  if (error || !user) {
-    return (
-      <ErrorDisplay
-        error={error || "User not found"}
-        id={id}
-        onRetry={handleRetry}
-        onGoHome={handleGoHome}
-      />
-    );
-  }
-
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        bgcolor: "#242424",
-        py: { xs: 2, md: 4 },
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Grid2 container justifyContent="center">
-          <Grid2 size={{ xs: 12, md: 6, lg: 4 }}>
-            <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
-              <VisitingCardContent user={user} />
-            </Paper>
-          </Grid2>
-        </Grid2>
-      </Container>
-    </Box>
-  );
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
 };
 
-export default VisitingCardPage;
+async function getEmployeeData(id: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
+      { cache: "no-store" },
+    );
+
+    if (!res.ok) return null;
+
+    return res.json();
+  } catch (error) {
+    console.error("Employee fetch error:", error);
+    return null;
+  }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const response = await getEmployeeData(id);
+  const user = response?.data;
+  if (!user) {
+    return {
+      title: "Employee Not Found",
+      description: "Employee information not available",
+    };
+  }
+
+  const profileImage =
+    user?.profileImage && user.profileImage.startsWith("http")
+      ? user.profileImage
+      : "https://inrext.com/default-profile.png";
+
+  return {
+    title: `${user.name} | ${user.designation}`,
+    description: `${user.name} - ${user.designation} at ${user.company}`,
+
+    openGraph: {
+      title: user.name,
+      description: user.designation,
+      url: `https://inrext.com/visiting-card/${id}`,
+      siteName: "Inrext",
+      images: [
+        {
+          url: profileImage,
+          width: 800,
+          height: 800,
+        },
+      ],
+      type: "profile",
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: user.name,
+      description: user.designation,
+      images: [profileImage],
+    },
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+
+  return <VisitingCardClient id={id} />;
+}
+
+ 
