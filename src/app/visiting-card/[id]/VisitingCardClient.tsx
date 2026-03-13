@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 
 import Box from "@mui/material/Box";
@@ -28,8 +28,8 @@ const dummyUser = {
 const VisitingCardClient: React.FC<Props> = ({ id }) => {
   const router = useRouter();
 
-  const [user] = useState(dummyUser);
-  const [error] = useState<string | null>(null);
+  const user: typeof dummyUser = dummyUser;
+  const error: string | null = null;
 
   const handleRetry = () => {
     window.location.reload();
@@ -65,7 +65,7 @@ const VisitingCardClient: React.FC<Props> = ({ id }) => {
         <Box display="flex" justifyContent="center">
           <Box width={{ xs: "100%", md: "50%", lg: "33%" }}>
             <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
-              <VisitingCardContent user={user} />
+             <VisitingCardContent user={user as any} />
             </Paper>
           </Box>
         </Box>
