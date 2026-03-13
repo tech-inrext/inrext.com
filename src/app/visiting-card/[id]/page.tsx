@@ -7,15 +7,15 @@ type Props = {
   }>;
 };
 
-// Dummy employee data
+// Dummy employee data with profile photo
 const dummyEmployee = {
   name: "Prince Ojha",
   email: "princeojha783@gmail.com",
   phone: "7991961411",
   altPhone: "",
   designation: "SDE-1",
-  photo: "",
-  specialization: "",
+  photo: "https://randomuser.me/api/portraits/men/32.jpg",
+  specialization: "Software Development",
   company: "Inrext",
 };
 
