@@ -6,12 +6,11 @@ import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
 
-import useEmployeeData from "./useEmployeeData";
-import VisitingCardSkeleton from "./VisitingCardSkeleton";
-import ErrorDisplay from "./ErrorDisplay";
-import VisitingCardContent from "./VisitingCardContent";
+import useEmployeeData from "../useEmployeeData";
+import VisitingCardSkeleton from "../VisitingCardSkeleton";
+import ErrorDisplay from "../ErrorDisplay";
+import VisitingCardContent from "../VisitingCardContent";
 
 interface Props {
   id: string;
@@ -43,13 +42,13 @@ const VisitingCardClient: React.FC<Props> = ({ id }) => {
         }}
       >
         <Container maxWidth="lg">
-          <Grid container justifyContent="center">
-            <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+          <Box display="flex" justifyContent="center">
+            <Box width={{ xs: "100%", md: "50%", lg: "33%" }}>
               <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
                 <VisitingCardSkeleton />
               </Paper>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
       </Box>
     );
@@ -78,13 +77,13 @@ const VisitingCardClient: React.FC<Props> = ({ id }) => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container justifyContent="center">
-          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        <Box display="flex" justifyContent="center">
+          <Box width={{ xs: "100%", md: "50%", lg: "33%" }}>
             <Paper elevation={8} sx={{ overflow: "hidden", borderRadius: 2 }}>
               <VisitingCardContent user={user} />
             </Paper>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

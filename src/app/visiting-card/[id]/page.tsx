@@ -1,19 +1,17 @@
 import { Metadata } from "next";
-import VisitingCardClient from "../VisitingCardClient";
+import VisitingCardClient from "./VisitingCardClient";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
-      {
-        cache: "no-store",
-      }
+      { cache: "no-store" }
     );
 
     if (!res.ok) return null;
@@ -26,7 +24,7 @@ async function getEmployeeData(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const id = params.id;
+  const { id } = await params;
 
   const user = await getEmployeeData(id);
 
@@ -42,8 +40,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? user.profileImage
       : "https://staging.inrext.com/default-profile.png";
 
-  const url = `https://staging.inrext.com/visiting-card/${id}`;
-
   return {
     title: `${user.name} | ${user.designation}`,
     description: `${user.name} - ${user.designation} at ${user.company}`,
@@ -51,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: user.name,
       description: user.designation,
-      url: url,
+      url: `https://staging.inrext.com/visiting-card/${id}`,
       siteName: "Inrext",
       images: [
         {
@@ -72,6 +68,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function Page({ params }: Props) {
-  return <VisitingCardClient id={params.id} />;
+export default async function Page({ params }: Props) {
+  const { id } = await params;
+
+  return <VisitingCardClient id={id} />;
 }
