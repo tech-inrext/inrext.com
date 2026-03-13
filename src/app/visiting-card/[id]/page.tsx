@@ -7,20 +7,21 @@ type Props = {
   }>;
 };
 
+// Dummy data instead of API
 async function getEmployeeData(id: string) {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
-      { cache: "no-store" },
-    );
-
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (error) {
-    console.error("Employee fetch error:", error);
-    return null;
-  }
+  return {
+    success: true,
+    data: {
+      name: "Prince Ojha",
+      email: "princeojha783@gmail.com",
+      phone: "7991961411",
+      altPhone: "",
+      designation: "SDE-1",
+      photo: "",
+      specialization: "",
+      company: "Inrext"
+    }
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -28,6 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const response = await getEmployeeData(id);
   const user = response?.data;
+
   if (!user) {
     return {
       title: "Employee Not Found",
@@ -36,8 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const profileImage =
-    user?.profileImage && user.profileImage.startsWith("http")
-      ? user.profileImage
+    user?.photo && user.photo.startsWith("http")
+      ? user.photo
       : "https://inrext.com/default-profile.png";
 
   return {
@@ -73,5 +75,3 @@ export default async function Page({ params }: Props) {
 
   return <VisitingCardClient id={id} />;
 }
-
- 

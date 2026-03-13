@@ -17,7 +17,7 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isDevelopment = true;
     
     return [
       {
