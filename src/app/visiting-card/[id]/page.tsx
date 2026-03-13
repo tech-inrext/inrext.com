@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import VisitingCardClient from "./VisitingCardClient";
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 async function getEmployeeData(id: string) {
@@ -24,11 +24,10 @@ async function getEmployeeData(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = params;
+  const { id } = await params;
 
   const response = await getEmployeeData(id);
   const user = response?.data;
-
   if (!user) {
     return {
       title: "Employee Not Found",
@@ -39,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const profileImage =
     user?.profileImage && user.profileImage.startsWith("http")
       ? user.profileImage
-      : "https://staging.inrext.com/default-profile.png";
+      : "https://inrext.com/default-profile.png";
 
   return {
     title: `${user.name} | ${user.designation}`,
@@ -48,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: user.name,
       description: user.designation,
-      url: `https://staging.inrext.com/visiting-card/${id}`,
+      url: `https://inrext.com/visiting-card/${id}`,
       siteName: "Inrext",
       images: [
         {
@@ -69,8 +68,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function Page({ params }: Props) {
-  const { id } = params;
+export default async function Page({ params }: Props) {
+  const { id } = await params;
 
   return <VisitingCardClient id={id} />;
 }
+
+ 
