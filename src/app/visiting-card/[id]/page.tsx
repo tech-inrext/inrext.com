@@ -7,35 +7,22 @@ type Props = {
   }>;
 };
 
-// Dummy data instead of API
-async function getEmployeeData(id: string) {
-  return {
-    success: true,
-    data: {
-      name: "Prince Ojha",
-      email: "princeojha783@gmail.com",
-      phone: "7991961411",
-      altPhone: "",
-      designation: "SDE-1",
-      photo: "",
-      specialization: "",
-      company: "Inrext"
-    }
-  };
-}
+// Dummy employee data
+const dummyEmployee = {
+  name: "Prince Ojha",
+  email: "princeojha783@gmail.com",
+  phone: "7991961411",
+  altPhone: "",
+  designation: "SDE-1",
+  photo: "",
+  specialization: "",
+  company: "Inrext",
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
-  const response = await getEmployeeData(id);
-  const user = response?.data;
-
-  if (!user) {
-    return {
-      title: "Employee Not Found",
-      description: "Employee information not available",
-    };
-  }
+  const user = dummyEmployee;
 
   const profileImage =
     user?.photo && user.photo.startsWith("http")
