@@ -20,7 +20,7 @@ const dummyUser = {
   phone: "7991961411",
   altPhone: "",
   designation: "SDE-1",
-  photo: "https://randomuser.me/api/portraits/men/32.jpg",
+  photo: "https://i.postimg.cc/NMkN2Fxj/Screenshot-2026-03-13-172839.jpg",
   specialization: "Software Development",
   company: "Inrext",
 };
