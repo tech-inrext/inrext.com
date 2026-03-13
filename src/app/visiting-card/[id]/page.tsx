@@ -11,7 +11,7 @@ async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
-      { cache: "no-store" }
+      { cache: "no-store" },
     );
 
     if (!res.ok) return null;
@@ -26,8 +26,8 @@ async function getEmployeeData(id: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
-  const user = await getEmployeeData(id);
-
+  const response = await getEmployeeData(id);
+  const user = response?.data;
   if (!user) {
     return {
       title: "Employee Not Found",
