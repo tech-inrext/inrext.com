@@ -14,7 +14,7 @@ const dummyEmployee = {
   phone: "7991961411",
   altPhone: "",
   designation: "SDE-1",
-  photo: "https://i.postimg.cc/NMkN2Fxj/Screenshot-2026-03-13-172839.jpg",
+  photo: "https://i.postimg.cc/GhvkLtbT/Whats-App-Image-2026-03-13-at-17-54-31.jpg",
   specialization: "Software Development",
   company: "Inrext",
 };
