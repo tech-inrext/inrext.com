@@ -22,8 +22,8 @@ const PropertyDetails: React.FC = () => {
     typeof params?.name === "string"
       ? params.name
       : Array.isArray(params?.name)
-      ? params.name[0]
-      : "";
+        ? params.name[0]
+        : "";
   const { isDarkMode } = useTheme();
   const [property, setProperty] = useState<Property | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -41,7 +41,7 @@ const PropertyDetails: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch property by slug
-        const prop = await propertyService.fetchPropertyBySlug(slug , true);
+        const prop = await propertyService.fetchPropertyBySlug(slug, true);
         if (!isMounted) return;
         setProperty(prop);
         setPropertyId(prop?._id || null);
@@ -74,7 +74,6 @@ const PropertyDetails: React.FC = () => {
       isMounted = false;
     };
   }, [slug]);
-
 
   if (!property) {
     return <div>Loading...</div>;
@@ -175,7 +174,7 @@ const PropertyDetails: React.FC = () => {
                     sizes="80px"
                     priority={selectedImage === idx}
                   />
-                ) : null
+                ) : null,
               )}
             </div>
           </div>
@@ -281,7 +280,10 @@ const PropertyDetails: React.FC = () => {
                           </div>
                           <div className="flex flex-row gap-4 mt-2">
                             <span className="text-lg font-extralight">
-                              <b>Price:</b> {child.price || "-"}
+                              <b>Price:</b>{" "}
+                              {child.price && child.sizeUnit
+                                ? `${child.price} / ${child.sizeUnit}`
+                                : child.price || "-"}
                             </span>
                             <span className="text-lg font-extralight">
                               <b>Size:</b>{" "}
@@ -357,68 +359,75 @@ const PropertyDetails: React.FC = () => {
                           </div>
                         </div>
                         <div className="mt-2">
-                        <button
-  className="text-blue-600 font-semibold flex items-center hover:underline text-md"
-  onClick={async () => {
-    setShowChildModal(true);
-    setChildLoading(true);
-    setChildDetails(null);
-    setChildImages([]);
+                          <button
+                            className="text-blue-600 font-semibold flex items-center hover:underline text-md"
+                            onClick={async () => {
+                              setShowChildModal(true);
+                              setChildLoading(true);
+                              setChildDetails(null);
+                              setChildImages([]);
 
-    const childKey =
-      child.slug || child.name || child.projectName;
+                              const childKey =
+                                child.slug || child.name || child.projectName;
 
-    if (!childKey || !propertyId) {
-      setChildLoading(false);
-      return;
-    }
+                              if (!childKey || !propertyId) {
+                                setChildLoading(false);
+                                return;
+                              }
 
-    try {
-      const result = await api.get(
-        `/public/property?parentId=${propertyId}&slug=${childKey}`
-      );
+                              try {
+                                const result = await api.get(
+                                  `/public/property?parentId=${propertyId}&slug=${childKey}`,
+                                );
 
-      // ✅ ALWAYS normalize backend response
-      const payload = result.data;
+                                // ✅ ALWAYS normalize backend response
+                                const payload = result.data;
 
-      const childData =
-        Array.isArray(payload?.data) && payload.data.length > 0
-          ? payload.data[0]
-          : payload?.data || null;
+                                const childData =
+                                  Array.isArray(payload?.data) &&
+                                  payload.data.length > 0
+                                    ? payload.data[0]
+                                    : payload?.data || null;
 
-      if (!childData) {
-        throw new Error("No child property found");
-      }
+                                if (!childData) {
+                                  throw new Error("No child property found");
+                                }
 
-      setChildDetails(childData);
+                                setChildDetails(childData);
 
-      let imgs = normalizeImages(childData.images || []);
-      if (imgs.length === 0) {
-        imgs = ["/images/no-image-available.png"];
-      }
-      setChildImages(imgs);
-    } catch (error) {
-      console.error("Child property fetch error:", error);
-      setChildDetails(null);
-      setChildImages(["/images/no-image-available.png"]);
-    } finally {
-      setChildLoading(false);
-    }
-  }}
->
-  View More Details
-  <svg
-    width="18"
-    height="18"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path d="M5 12h14M12 5l7 7-7 7" />
-  </svg>
-</button>
-
+                                let imgs = normalizeImages(
+                                  childData.images || [],
+                                );
+                                if (imgs.length === 0) {
+                                  imgs = ["/images/no-image-available.png"];
+                                }
+                                setChildImages(imgs);
+                              } catch (error) {
+                                console.error(
+                                  "Child property fetch error:",
+                                  error,
+                                );
+                                setChildDetails(null);
+                                setChildImages([
+                                  "/images/no-image-available.png",
+                                ]);
+                              } finally {
+                                setChildLoading(false);
+                              }
+                            }}
+                          >
+                            View More Details
+                            <svg
+                              width="18"
+                              height="18"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -429,15 +438,19 @@ const PropertyDetails: React.FC = () => {
           </div>
 
           {/* Child Property Modal */}
-          {showChildModal && (
-            <div className="fixed inset-0 z-1000 flex justify-center items-center backdrop-blur-md bg-black/40">
-              <div
-                className={`relative z-1010 rounded-2xl shadow-2xl p-8 w-[90vw] max-w-5xl border-2 transition-colors duration-300 ${
-                  isDarkMode
-                    ? "bg-black text-white border-white"
-                    : "bg-white text-black border-blue-200"
-                }`}
-              >
+           {showChildModal && (
+  <div className="fixed inset-0 z-[1000] overflow-y-auto bg-black/40 backdrop-blur-md">
+    
+    {/* TOP ALIGN WRAPPER */}
+    <div className="flex justify-center mt-18 pb-10">
+      
+      <div
+        className={`relative rounded-2xl shadow-2xl p-8 w-[90vw] max-w-5xl border-2 transition-colors duration-300 ${
+          isDarkMode
+            ? "bg-black text-white border-white"
+            : "bg-white text-black border-blue-200"
+        }`}
+      >
                 <button
                   className={`absolute top-4 right-6 text-2xl font-bold transition-colors duration-200 ${
                     isDarkMode
@@ -519,7 +532,13 @@ const PropertyDetails: React.FC = () => {
                         </div>
                         <div>
                           <span className="font-semibold">Price:</span>{" "}
-                          {childDetails.price || childDetails.minPrice || "-"}
+                          {childDetails.price || childDetails.minPrice
+                            ? `${childDetails.price || childDetails.minPrice}${
+                                childDetails.sizeUnit
+                                  ? ` / ${childDetails.sizeUnit}`
+                                  : ""
+                              }`
+                            : "-"}
                         </div>
                         <div>
                           <span className="font-semibold">Location:</span>{" "}
@@ -531,7 +550,7 @@ const PropertyDetails: React.FC = () => {
                             ? `${childDetails.minSize}${
                                 childDetails.sizeUnit
                                   ? ` ${childDetails.sizeUnit}`
-                                  : "" 
+                                  : ""
                               }`
                             : "-"}
                         </div>
@@ -567,6 +586,7 @@ const PropertyDetails: React.FC = () => {
                   </div>
                 )}
               </div>
+            </div>
             </div>
           )}
           {/* Location */}
@@ -670,7 +690,7 @@ const PropertyDetails: React.FC = () => {
                     <li key={index} className="flex items-center">
                       <span className="mr-2">•</span> {projectHighlight}
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </div>
