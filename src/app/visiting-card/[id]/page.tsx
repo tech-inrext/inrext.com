@@ -2,34 +2,7 @@ import { Metadata } from "next";
 import VisitingCardClient from "./VisitingCardClient";
 
 type Props = {
-<<<<<<< HEAD
-  params: Promise<{
-    id: string;
-  }>;
-};
-
-// Dummy employee data with profile photo
-const dummyEmployee = {
-  name: "Prince Ojha",
-  email: "princeojha783@gmail.com",
-  phone: "7991961411",
-  altPhone: "",
-  designation: "SDE-1",
-  photo: "https://i.postimg.cc/GhvkLtbT/Whats-App-Image-2026-03-13-at-17-54-31.jpg",
-  specialization: "Software Development",
-  company: "Inrext",
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-
-  const user = dummyEmployee;
-
-  const profileImage =
-    user?.photo && user.photo.startsWith("http")
-      ? user.photo
-      : "https://inrext.com/default-profile.png";
-=======
+ 
   params: {
     id: string;
   };
@@ -62,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: "Employee information not available",
     };
   }
->>>>>>> 5d57175fde2c8850d9a320ce510187e316660df5
+ 
 
   const profileImage =
     user?.profileImage && user.profileImage.startsWith("http")
@@ -101,10 +74,7 @@ export default async function Page({ params }: Props) {
   const { id } = await params;
 
   return <VisitingCardClient id={id} />;
-<<<<<<< HEAD
-}
-=======
+ 
 }
 
  
->>>>>>> 5d57175fde2c8850d9a320ce510187e316660df5

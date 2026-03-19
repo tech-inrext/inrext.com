@@ -16,21 +16,6 @@ const nextConfig = {
       },
     ],
   },
-<<<<<<< HEAD
-  async rewrites() {
-    const isDevelopment = true;
-    
-    return [
-      {
-        source: '/api/v0/public/:path*',
-        destination: isDevelopment
-          ? 'http://localhost:3000/api/v0/public/:path*'
-          : 'https://dashboard.inrext.com/api/v0/public/:path*',
-      },
-    ];
-  },
-=======
->>>>>>> 5d57175fde2c8850d9a320ce510187e316660df5
 };
 
 module.exports = nextConfig;
