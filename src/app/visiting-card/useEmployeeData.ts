@@ -22,7 +22,7 @@ interface UseEmployeeDataResult {
 
 const useEmployeeData = (id: string): UseEmployeeDataResult => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,26 +33,27 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
 
         if (!id) {
           setError("No employee ID provided");
+          setLoading(false);
           return;
         }
 
-        const apiUrl = `/api/v0/public/employee/${id}`;
-        const response = await axios.get(apiUrl, {
-          headers: {
-            'Cache-Control': 'no-cache',
-          },
-        });
+        // ✅ FIX: call your Next.js API (NOT CRM directly)
+        const response = await axios.get(`/api/v0/visiting-card/${id}`);
 
-        if (response.data.success && response.data.data) {
+        if (response.data?.data) {
           setUser(response.data.data);
         } else {
-          setError(response.data.error || "Employee not found");
+          setError("Employee not found");
         }
       } catch (error: any) {
         if (error.response) {
-          setError(`Server error: ${error.response.status} - ${error.response.data?.error || error.message}`);
+          setError(
+            `Server error: ${error.response.status} - ${
+              error.response.data?.error || error.message
+            }`
+          );
         } else if (error.request) {
-          setError("Unable to reach the server. Please check your internet connection.");
+          setError("Unable to reach the server.");
         } else {
           setError(error.message || "Failed to load employee data");
         }
@@ -61,12 +62,7 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
       }
     };
 
-    if (id) {
-      fetchUserData();
-    } else {
-      setError("Please provide an employee ID in the URL");
-      setLoading(false);
-    }
+    fetchUserData();
   }, [id]);
 
   return { user, loading, error };

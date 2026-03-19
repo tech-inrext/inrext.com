@@ -2,16 +2,16 @@ import { Metadata } from "next";
 import VisitingCardClient from "./VisitingCardClient";
 
 type Props = {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 };
 
 async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
-      { cache: "no-store" },
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/visiting-card/${id}`,
+      { cache: "no-store" }
     );
 
     if (!res.ok) return null;
