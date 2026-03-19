@@ -16,6 +16,7 @@ const nextConfig = {
       },
     ],
   },
+<<<<<<< HEAD
   async rewrites() {
     const isDevelopment = true;
     
@@ -28,6 +29,8 @@ const nextConfig = {
       },
     ];
   },
+=======
+>>>>>>> 5d57175fde2c8850d9a320ce510187e316660df5
 };
 
 module.exports = nextConfig;
