@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 const CRM_PUBLIC_API =
-  process.env.NEXT_PUBLIC_API_URL;
+  process.env.API_URL;
 
 export async function GET(req) {
   try {

@@ -11,7 +11,7 @@ type Props = {
 async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v0/visiting-card/${id}`,
+      `${process.env.INREXT_WEBSITE_URL}/api/v0/visiting-card/${id}`,
       { cache: "no-store" }
     );
 
