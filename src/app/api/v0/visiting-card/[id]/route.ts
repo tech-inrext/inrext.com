@@ -7,7 +7,7 @@ export async function GET(
     const { id } = await context.params;
 
     const res = await fetch(
-      `${process.env.API_URL}/public/employee/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/public/employee/${id}`,
       {
         cache: "no-store",
       }
