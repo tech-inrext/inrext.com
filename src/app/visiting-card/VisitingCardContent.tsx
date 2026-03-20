@@ -231,7 +231,9 @@ const VisitingCardContent: React.FC<VisitingCardContentProps> = ({ user }) => {
               justifyContent: "center",
               gap: 2,
               mt: 5,
+              mb: 2, // ✅ add margin bottom
               px: 3,
+              flexShrink: 0, // ✅ IMPORTANT for iOS
             }}
           >
             {user?.phone && (
@@ -322,7 +324,15 @@ const VisitingCardContent: React.FC<VisitingCardContentProps> = ({ user }) => {
           </Box>
 
           {/* Address */}
-          <Box sx={{ mt: "auto", pb: 6, px: 3, textAlign: "center" }}>
+          <Box
+            sx={{
+              pb: 6,
+              px: 3,
+              textAlign: "center",
+              flexShrink: 0, // ✅ prevents collapsing in iOS
+            }}
+          >
+            {" "}
             <Typography
               sx={{
                 opacity: 0.9,
