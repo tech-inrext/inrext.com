@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import VisitingCardClient from "./VisitingCardClient";
 
 type Props = {
- 
   params: {
     id: string;
   };
@@ -12,7 +11,7 @@ async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
       `${process.env.INREXT_WEBSITE_URL}/api/v0/visiting-card/${id}`,
-      { cache: "no-store" }
+      { next: { revalidate: 60 } },
     );
 
     if (!res.ok) return null;
@@ -35,7 +34,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: "Employee information not available",
     };
   }
- 
 
   const profileImage =
     user?.profileImage && user.profileImage.startsWith("http")
@@ -43,19 +41,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : "https://inrext.com/default-profile.png";
 
   return {
+    metadataBase: new URL("https://staging.inrext.com"),
     title: `${user.name} | ${user.designation}`,
     description: `${user.name} - ${user.designation} at ${user.company}`,
 
     openGraph: {
       title: user.name,
       description: user.designation,
-      url: `https://inrext.com/visiting-card/${id}`,
+      url: `https://staging.inrext.com/visiting-card/${id}`,
       siteName: "Inrext",
       images: [
         {
-          url: profileImage,
-          width: 800,
-          height: 800,
+          url: `https://inrext.s3.ap-south-1.amazonaws.com/uploads/4c3cb699-f9ba-4c34-97d5-d3ba4f32aee3_4eaf081c599286fd9ca84c1757c07152.jpg.jpeg`,
+          width: 1200,
+          height: 630,
         },
       ],
       type: "profile",
@@ -74,7 +73,4 @@ export default async function Page({ params }: Props) {
   const { id } = await params;
 
   return <VisitingCardClient id={id} />;
- 
 }
-
- 
