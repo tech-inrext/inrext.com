@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : "https://inrext.com/default-profile.png";
 
   return {
-    metadataBase: new URL("https://staging.inrext.com"),
+    metadataBase: new URL("https://inrext.com"),
     title: `${user.name} | ${user.designation}`,
     description: `${user.name} - ${user.designation} at ${user.company}`,
 
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "Inrext",
       images: [
         {
-          url: `https://inrext.s3.ap-south-1.amazonaws.com/uploads/4c3cb699-f9ba-4c34-97d5-d3ba4f32aee3_4eaf081c599286fd9ca84c1757c07152.jpg.jpeg`,
+          url: profileImage,
           width: 1200,
           height: 630,
         },

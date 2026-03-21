@@ -26,19 +26,20 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) {
+      setError("No employee ID provided");
+      setLoading(false);
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        if (!id) {
-          setError("No employee ID provided");
-          setLoading(false);
-          return;
-        }
-
-        // ✅ FIX: call your Next.js API (NOT CRM directly)
-        const response = await axios.get(`/api/v0/visiting-card/${id}`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/public/employee/${id}`
+        );
 
         if (response.data?.data) {
           setUser(response.data.data);
