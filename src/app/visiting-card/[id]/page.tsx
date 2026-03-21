@@ -10,8 +10,8 @@ type Props = {
 async function getEmployeeData(id: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v0/visiting-card/${id}`,
-      { cache: "no-store" }
+      `${process.env.INREXT_WEBSITE_URL}/api/v0/visiting-card/${id}`,
+      { next: { revalidate: 60 } },
     );
 
     if (!res.ok) return null;
@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       : "https://inrext.com/default-profile.png";
 
   return {
+    metadataBase: new URL("https://inrext.com"),
     title: `${user.name} | ${user.designation}`,
     description: `${user.name} - ${user.designation} at ${user.company}`,
 
@@ -52,8 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [
         {
           url: profileImage,
-          width: 800,
-          height: 800,
+          width: 1200,
+          height: 630,
         },
       ],
       type: "profile",
@@ -73,5 +74,3 @@ export default async function Page({ params }: Props) {
 
   return <VisitingCardClient id={id} />;
 }
-
- 
