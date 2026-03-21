@@ -1,96 +1,36 @@
 import { NextResponse } from "next/server";
 
-const CRM_PUBLIC_API =
-  process.env.NEXT_PUBLIC_API_URL;
+const CRM_API = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(req) {
   try {
+
     const { searchParams } = new URL(req.url);
 
-    const slug = searchParams.get("slug");
-    const withChildren = searchParams.get("withChildren") === "true";
-    const parentId = searchParams.get("parentId");
+    const url = `${CRM_API}/v0/property?${searchParams.toString()}`;
 
-    if (slug) {
-      // Fetch single property by slug
-      const crmRes = await fetch(
-        `${CRM_PUBLIC_API}/public/property?slug=${encodeURIComponent(slug)}&withChildren=${withChildren}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        }
-      );
-      if (!crmRes.ok) {
-        throw new Error("CRM API failed");
-      }
-      const crmData = await crmRes.json();
-      return NextResponse.json({
-        success: crmData.success !== false,
-        data: crmData.data || null,
-      });
-    }
-
-    if (parentId) {
-      // Fetch sub-properties by parentId
-      const crmRes = await fetch(
-        `${CRM_PUBLIC_API}/public/property?parentId=${encodeURIComponent(parentId)}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        }
-      );
-      if (!crmRes.ok) {
-        throw new Error("CRM API failed");
-      }
-      const crmData = await crmRes.json();
-      const properties = Array.isArray(crmData?.data) ? crmData.data : [];
-      return NextResponse.json({
-        success: true,
-        data: properties,
-      });
-    }
-
-    // List mode (default)
-    const category = searchParams.get("category") || "";
-    const featured = searchParams.get("featured") || "false";
-    const limit = searchParams.get("limit") || "20";
-     
-
-    const crmRes = await fetch(
-      `${CRM_PUBLIC_API}/public/property?category=${category}&featured=${featured}&limit=${limit}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        cache: "no-store",
-      }
-    );
+    const crmRes = await fetch(url, {
+      method: "GET",
+      cache: "no-store"
+    });
 
     if (!crmRes.ok) {
       throw new Error("CRM API failed");
     }
 
     const crmData = await crmRes.json();
-    const properties = Array.isArray(crmData?.data)
-      ? crmData.data
-      : [];
-    return NextResponse.json({
-      success: true,
-      data: properties,
-    });
+
+    // RETURN EXACT CRM RESPONSE
+    return NextResponse.json(crmData);
+
   } catch (error) {
-    console.error("Website Property Proxy Error:", error);
+
+    console.error("Property Proxy Error:", error);
+
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch properties",
+        message: "Failed to fetch properties"
       },
       { status: 500 }
     );
