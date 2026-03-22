@@ -3,7 +3,7 @@ import api from "./api";
 export async function fetchPillarsByCategory(category: string) {
   try {
     const res = await api.get(
-      `public/pillars?category=${encodeURIComponent(category)}`
+      `/api/v0/public/pillars?category=${encodeURIComponent(category)}`
     );
 
     if (!res) {

@@ -14,7 +14,7 @@ export async function GET(req) {
     if (slug) {
       // Fetch single property by slug
       const crmRes = await fetch(
-        `${CRM_PUBLIC_API}/public/property?slug=${encodeURIComponent(slug)}&withChildren=${withChildren}`,
+        `${CRM_PUBLIC_API}/api/v0/public/property?slug=${encodeURIComponent(slug)}&withChildren=${withChildren}`,
         {
           method: "GET",
           headers: {
@@ -36,7 +36,7 @@ export async function GET(req) {
     if (parentId) {
       // Fetch sub-properties by parentId
       const crmRes = await fetch(
-        `${CRM_PUBLIC_API}/public/property?parentId=${encodeURIComponent(parentId)}`,
+        `${CRM_PUBLIC_API}/api/v0/public/property?parentId=${encodeURIComponent(parentId)}`,
         {
           method: "GET",
           headers: {
@@ -63,7 +63,7 @@ export async function GET(req) {
      
 
     const crmRes = await fetch(
-      `${CRM_PUBLIC_API}/public/property?category=${category}&featured=${featured}&limit=${limit}`,
+      `${CRM_PUBLIC_API}/api/v0/public/property?category=${category}&featured=${featured}&limit=${limit}`,
       {
         method: "GET",
         headers: {

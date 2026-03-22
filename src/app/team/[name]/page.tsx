@@ -29,10 +29,10 @@ const SingleTeam = () => {
           powerhouseTeamRes,
           growthNavigatorsRes,
         ] = await Promise.all([
-          api.get("/pillars?category=the-visionaries").then((r) => r.data),
-          api.get("/pillars?category=the-strategic-force").then((r) => r.data),
-          api.get("/pillars?category=the-powerhouse-team").then((r) => r.data),
-          api.get("/pillars?category=growth-navigators").then((r) => r.data),
+          api.get("/api/v0/pillars?category=the-visionaries").then((r) => r.data),
+          api.get("/api/v0/pillars?category=the-strategic-force").then((r) => r.data),
+          api.get("/api/v0/pillars?category=the-powerhouse-team").then((r) => r.data),
+          api.get("/api/v0/pillars?category=growth-navigators").then((r) => r.data),
         ]);
         setVisionaries(Array.isArray(visionariesRes) ? visionariesRes : (Array.isArray(visionariesRes?.data) ? visionariesRes.data : []));
         setTeamMembers([
@@ -73,7 +73,7 @@ return () => window.removeEventListener("resize", checkScreenSize);
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await api.get("/pillars?category");
+        const res = await api.get("api/v0/pillars?category");
         const data = res.data;
         if (data.success && Array.isArray(data.data)) {
           setProperties(data.data);
