@@ -14,13 +14,7 @@ interface User {
   specialization?: string;
 }
 
-interface UseEmployeeDataResult {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const useEmployeeData = (id: string): UseEmployeeDataResult => {
+const useEmployeeData = (id: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,26 +31,30 @@ const useEmployeeData = (id: string): UseEmployeeDataResult => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/public/employee/${id}`
-        );
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v0/public/employee/${id}`;
 
-        if (response.data?.data) {
-          setUser(response.data.data);
+        const res = await axios.get(url);
+
+        console.log("API RESPONSE:", res.data);
+
+        if (res.data?.success && res.data?.data) {
+          setUser(res.data.data);
         } else {
           setError("Employee not found");
         }
-      } catch (error: any) {
-        if (error.response) {
+      } catch (err: any) {
+        console.error("Fetch error:", err);
+
+        if (err.response) {
           setError(
-            `Server error: ${error.response.status} - ${
-              error.response.data?.error || error.message
+            `Server error: ${err.response.status} - ${
+              err.response.data?.error || err.message
             }`
           );
-        } else if (error.request) {
-          setError("Unable to reach the server.");
+        } else if (err.request) {
+          setError("Unable to reach server");
         } else {
-          setError(error.message || "Failed to load employee data");
+          setError("Something went wrong");
         }
       } finally {
         setLoading(false);
