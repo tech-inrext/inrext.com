@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: user.name,
       description: user.designation,
-      url: `https://staging.inrext.com/visiting-card/${id}`,
+      url: `https://inrext.com/visiting-card/${id}`,
       siteName: "Inrext",
       images: [
         {
