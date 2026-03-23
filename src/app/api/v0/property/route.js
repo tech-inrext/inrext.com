@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
-const CRM_PUBLIC_API =
-  process.env.NEXT_PUBLIC_API_URL;
+const CRM_API = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET(req) {
   try {
+
     const { searchParams } = new URL(req.url);
 
     const slug = searchParams.get("slug");
@@ -78,19 +78,18 @@ export async function GET(req) {
     }
 
     const crmData = await crmRes.json();
-    const properties = Array.isArray(crmData?.data)
-      ? crmData.data
-      : [];
-    return NextResponse.json({
-      success: true,
-      data: properties,
-    });
+
+    // RETURN EXACT CRM RESPONSE
+    return NextResponse.json(crmData);
+
   } catch (error) {
-    console.error("Website Property Proxy Error:", error);
+
+    console.error("Property Proxy Error:", error);
+
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch properties",
+        message: "Failed to fetch properties"
       },
       { status: 500 }
     );

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     "Terms & Conditions governing the use of Inrext Private Limited website and real estate consultancy services.",
 };
 
-export default function TermsAndConditionsPage() {
+export default function TermsconditionsPage() {
   return (
     <section className="bg-gray-50 text-gray-800">
       <div className="max-w-5xl mx-auto px-4 py-12 bg-white">

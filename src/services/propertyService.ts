@@ -16,7 +16,7 @@ export type Property = {
   price?: string;
   minPrice?: number | string;
 
-  minSize?:number | string;
+  minSize?: number | string;
   maxSize?: number | string;
   sizeUnit?: string;
 
@@ -45,14 +45,48 @@ export const propertyService = {
         `/api/v0/public/property?featured=${featured}&limit=${limit}`,
       );
 
-      return Array.isArray(res.data?.data) ? res.data.data : [];
+      const properties: Property[] = Array.isArray(res.data?.data)
+        ? res.data.data
+        : [];
+
+      // 🔹 Get minSize from subproperties
+      const updatedProperties = await Promise.all(
+        properties.map(async (property) => {
+          try {
+            const subRes = await api.get(
+              `/public/property?parentId=${property._id}`,
+            );
+
+            const subs: Property[] = subRes?.data?.data || [];
+
+            if (subs.length > 0) {
+              const sizes = subs
+                .map((s) => Number(s.minSize))
+                .filter((v) => !isNaN(v));
+
+              if (sizes.length > 0) {
+                property.minSize = Math.min(...sizes);
+              }
+
+              property.sizeUnit = subs[0]?.sizeUnit || property.sizeUnit;
+            }
+
+            return property;
+          } catch (err) {
+            console.error("Subproperty fetch error:", err);
+            return property;
+          }
+        }),
+      );
+
+      return updatedProperties;
     } catch (error) {
       console.error("Property Service Fetch Error:", error);
       return [];
     }
   },
 
-  // ✅ DETAILS PAGE (slug-based, FIXES sizeUnit/minSize issue)
+  // ✅ DETAILS PAGE (slug-based)
   fetchPropertyBySlug: async (
     slug: string,
     withChildren = true,

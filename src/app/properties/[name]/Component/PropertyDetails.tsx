@@ -2,6 +2,13 @@
 import React, { useEffect, useState } from "react";
 type ChildProperty = any;
 import { useParams } from "next/navigation";
+import {
+  FaArrowRight,
+  FaImages,
+  FaBed,
+  FaBath,
+  FaUtensils,
+} from "react-icons/fa";
 import { useTheme } from "../../../content/ThemeContext";
 import { propertyService } from "../../../../services/propertyService";
 import { MdOutlineArrowOutward, MdOutlineCurrencyRupee } from "react-icons/md";
@@ -22,8 +29,8 @@ const PropertyDetails: React.FC = () => {
     typeof params?.name === "string"
       ? params.name
       : Array.isArray(params?.name)
-      ? params.name[0]
-      : "";
+        ? params.name[0]
+        : "";
   const { isDarkMode } = useTheme();
   const [property, setProperty] = useState<Property | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -41,7 +48,7 @@ const PropertyDetails: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch property by slug
-        const prop = await propertyService.fetchPropertyBySlug(slug , true);
+        const prop = await propertyService.fetchPropertyBySlug(slug, true);
         if (!isMounted) return;
         setProperty(prop);
         setPropertyId(prop?._id || null);
@@ -74,7 +81,6 @@ const PropertyDetails: React.FC = () => {
       isMounted = false;
     };
   }, [slug]);
-
 
   if (!property) {
     return <div>Loading...</div>;
@@ -175,7 +181,7 @@ const PropertyDetails: React.FC = () => {
                     sizes="80px"
                     priority={selectedImage === idx}
                   />
-                ) : null
+                ) : null,
               )}
             </div>
           </div>
@@ -252,16 +258,7 @@ const PropertyDetails: React.FC = () => {
                         />
                         {cardImages.length > 1 && (
                           <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="inline-block"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M4.5 8a3.5 3.5 0 1 1 7 0a3.5 3.5 0 0 1-7 0zm3.5-5a5 5 0 1 0 0 10A5 5 0 0 0 8 3z" />
-                            </svg>
+                            <FaImages className="inline-block" size={16} />
                             {cardImages.length}
                           </div>
                         )}
@@ -281,7 +278,10 @@ const PropertyDetails: React.FC = () => {
                           </div>
                           <div className="flex flex-row gap-4 mt-2">
                             <span className="text-lg font-extralight">
-                              <b>Price:</b> {child.price || "-"}
+                              <b>Price:</b>{" "}
+                              {child.price && child.sizeUnit
+                                ? `${child.price} / ${child.sizeUnit}`
+                                : child.price || "-"}
                             </span>
                             <span className="text-lg font-extralight">
                               <b>Size:</b>{" "}
@@ -296,129 +296,87 @@ const PropertyDetails: React.FC = () => {
                           <div className="flex flex-wrap items-center gap-6 text-base mb-3">
                             {child.roomType && (
                               <span className="flex items-center gap-1">
-                                <svg
-                                  width="20"
-                                  height="20"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <rect
-                                    x="3"
-                                    y="7"
-                                    width="18"
-                                    height="13"
-                                    rx="2"
-                                  />
-                                  <path d="M16 3v4M8 3v4" />
-                                </svg>
+                                <FaBed size={18} />
                                 {child.roomType}
                               </span>
                             )}
+
                             {child.bathroomType && (
                               <span className="flex items-center gap-1">
-                                <svg
-                                  width="20"
-                                  height="20"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path d="M7 10v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6" />
-                                  <path d="M3 10h18" />
-                                </svg>
+                                <FaBath size={18} />
                                 {child.bathroomType}
                               </span>
                             )}
+
                             {child.kitchenType && (
                               <span className="flex items-center gap-1">
-                                <svg
-                                  width="20"
-                                  height="20"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <rect
-                                    x="3"
-                                    y="7"
-                                    width="18"
-                                    height="13"
-                                    rx="2"
-                                  />
-                                  <path d="M16 3v4M8 3v4" />
-                                </svg>
+                                <FaUtensils size={18} />
                                 {child.kitchenType}
                               </span>
                             )}
                           </div>
                         </div>
                         <div className="mt-2">
-                        <button
-  className="text-blue-600 font-semibold flex items-center hover:underline text-md"
-  onClick={async () => {
-    setShowChildModal(true);
-    setChildLoading(true);
-    setChildDetails(null);
-    setChildImages([]);
+                          <button
+                            className="text-blue-600 font-semibold flex items-center hover:underline text-md"
+                            onClick={async () => {
+                              setShowChildModal(true);
+                              setChildLoading(true);
+                              setChildDetails(null);
+                              setChildImages([]);
 
-    const childKey =
-      child.slug || child.name || child.projectName;
+                              const childKey =
+                                child.slug || child.name || child.projectName;
 
-    if (!childKey || !propertyId) {
-      setChildLoading(false);
-      return;
-    }
+                              if (!childKey || !propertyId) {
+                                setChildLoading(false);
+                                return;
+                              }
 
     try {
       const result = await api.get(
         `api/v0/public/property?parentId=${propertyId}&slug=${childKey}`
       );
 
-      // ✅ ALWAYS normalize backend response
-      const payload = result.data;
+                                // ✅ ALWAYS normalize backend response
+                                const payload = result.data;
 
-      const childData =
-        Array.isArray(payload?.data) && payload.data.length > 0
-          ? payload.data[0]
-          : payload?.data || null;
+                                const childData =
+                                  Array.isArray(payload?.data) &&
+                                  payload.data.length > 0
+                                    ? payload.data[0]
+                                    : payload?.data || null;
 
-      if (!childData) {
-        throw new Error("No child property found");
-      }
+                                if (!childData) {
+                                  throw new Error("No child property found");
+                                }
 
-      setChildDetails(childData);
+                                setChildDetails(childData);
 
-      let imgs = normalizeImages(childData.images || []);
-      if (imgs.length === 0) {
-        imgs = ["/images/no-image-available.png"];
-      }
-      setChildImages(imgs);
-    } catch (error) {
-      console.error("Child property fetch error:", error);
-      setChildDetails(null);
-      setChildImages(["/images/no-image-available.png"]);
-    } finally {
-      setChildLoading(false);
-    }
-  }}
->
-  View More Details
-  <svg
-    width="18"
-    height="18"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path d="M5 12h14M12 5l7 7-7 7" />
-  </svg>
-</button>
-
+                                let imgs = normalizeImages(
+                                  childData.images || [],
+                                );
+                                if (imgs.length === 0) {
+                                  imgs = ["/images/no-image-available.png"];
+                                }
+                                setChildImages(imgs);
+                              } catch (error) {
+                                console.error(
+                                  "Child property fetch error:",
+                                  error,
+                                );
+                                setChildDetails(null);
+                                setChildImages([
+                                  "/images/no-image-available.png",
+                                ]);
+                              } finally {
+                                setChildLoading(false);
+                              }
+                            }}
+                          >
+                            View More Details
+                            <FaArrowRight className="ml-2" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -430,142 +388,151 @@ const PropertyDetails: React.FC = () => {
 
           {/* Child Property Modal */}
           {showChildModal && (
-            <div className="fixed inset-0 z-1000 flex justify-center items-center backdrop-blur-md bg-black/40">
-              <div
-                className={`relative z-1010 rounded-2xl shadow-2xl p-8 w-[90vw] max-w-5xl border-2 transition-colors duration-300 ${
-                  isDarkMode
-                    ? "bg-black text-white border-white"
-                    : "bg-white text-black border-blue-200"
-                }`}
-              >
-                <button
-                  className={`absolute top-4 right-6 text-2xl font-bold transition-colors duration-200 ${
+            <div className="fixed inset-0 z-[1000] overflow-y-auto bg-black/40 backdrop-blur-md">
+              {/* TOP ALIGN WRAPPER */}
+              <div className="flex justify-center mt-18 pb-10">
+                <div
+                  className={`relative rounded-2xl shadow-2xl p-8 w-[90vw] max-w-5xl border-2 transition-colors duration-300 ${
                     isDarkMode
-                      ? "text-gray-400 hover:text-gray-200"
-                      : "text-gray-400 hover:text-gray-700"
+                      ? "bg-black text-white border-white"
+                      : "bg-white text-black border-blue-200"
                   }`}
-                  onClick={() => {
-                    setShowChildModal(false);
-                    setChildDetails(null);
-                    setChildImages([]);
-                  }}
-                  aria-label="Close"
                 >
-                  ×
-                </button>
-                {childLoading ? (
-                  <div className="text-center py-16">Loading...</div>
-                ) : childDetails ? (
-                  <>
-                    <h2 className="text-3xl font-bold mb-6 text-center tracking-tight">
-                      {childDetails.projectName ||
-                        childDetails.propertyName ||
-                        "Property Details"}
-                    </h2>
-                    {/* Images Section */}
-                    <div className="mb-8 flex flex-col items-center">
-                      <Image
-                        src={childImages[0]}
-                        alt={childDetails.projectName || "Property"}
-                        width={400}
-                        height={250}
-                        className="rounded-xl object-cover w-full max-w-md h-[250px]"
-                        style={{ objectFit: "cover" }}
-                      />
-                      <div className="flex gap-2 mt-3 flex-wrap justify-center">
-                        {childImages.map((img, idx) => (
-                          <Image
-                            key={idx}
-                            src={img}
-                            alt={`Child Thumbnail ${idx + 1}`}
-                            width={60}
-                            height={40}
-                            className={`rounded-lg border-2 cursor-pointer ${
-                              childImages[0] === img
-                                ? "border-blue-500"
-                                : "border-transparent"
-                            }`}
-                            style={{ width: "60px", height: "40px" }}
-                            onClick={() => {
-                              setChildImages((prev) => [
-                                img,
-                                ...prev.filter((i) => i !== img),
-                              ]);
-                            }}
-                          />
-                        ))}
+                  <button
+                    className={`absolute top-4 right-6 text-2xl font-bold transition-colors duration-200 ${
+                      isDarkMode
+                        ? "text-gray-400 hover:text-gray-200"
+                        : "text-gray-400 hover:text-gray-700"
+                    }`}
+                    onClick={() => {
+                      setShowChildModal(false);
+                      setChildDetails(null);
+                      setChildImages([]);
+                    }}
+                    aria-label="Close"
+                  >
+                    ×
+                  </button>
+                  {childLoading ? (
+                    <div className="text-center py-16">Loading...</div>
+                  ) : childDetails ? (
+                    <>
+                      <h2 className="text-3xl font-bold mb-6 text-center tracking-tight">
+                        {childDetails.projectName ||
+                          childDetails.propertyName ||
+                          "Property Details"}
+                      </h2>
+                      {/* Images Section */}
+                      <div className="mb-8 flex flex-col items-center">
+                        <Image
+                          src={childImages[0]}
+                          alt={childDetails.projectName || "Property"}
+                          width={400}
+                          height={250}
+                          className="rounded-xl object-cover w-full max-w-md h-[250px]"
+                          style={{ objectFit: "cover" }}
+                        />
+                        <div className="flex gap-2 mt-3 flex-wrap justify-center">
+                          {childImages.map((img, idx) => (
+                            <Image
+                              key={idx}
+                              src={img}
+                              alt={`Child Thumbnail ${idx + 1}`}
+                              width={60}
+                              height={40}
+                              className={`rounded-lg border-2 cursor-pointer ${
+                                childImages[0] === img
+                                  ? "border-blue-500"
+                                  : "border-transparent"
+                              }`}
+                              style={{ width: "60px", height: "40px" }}
+                              onClick={() => {
+                                setChildImages((prev) => [
+                                  img,
+                                  ...prev.filter((i) => i !== img),
+                                ]);
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
+                      {/* Details Section */}
+                      <div className="mb-8">
+                        <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
+                          Room Details
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 text-base">
+                          <div>
+                            <span className="font-semibold">Builder:</span>{" "}
+                            {childDetails.builderName || "-"}
+                          </div>
+                          <div>
+                            <span className=" capitalize font-semibold">
+                              Type:
+                            </span>{" "}
+                            {childDetails.propertyType
+                              ? childDetails.propertyType
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                childDetails.propertyType.slice(1)
+                              : "-"}
+                          </div>
+                          <div>
+                            <span className="font-semibold">Price:</span>{" "}
+                            {childDetails.price || childDetails.minPrice
+                              ? `${childDetails.price || childDetails.minPrice}${
+                                  childDetails.sizeUnit
+                                    ? ` / ${childDetails.sizeUnit}`
+                                    : ""
+                                }`
+                              : "-"}
+                          </div>
+                          <div>
+                            <span className="font-semibold">Location:</span>{" "}
+                            {childDetails.location || "-"}
+                          </div>
+                          <div>
+                            <span className="font-semibold">Size:</span>{" "}
+                            {childDetails.minSize
+                              ? `${childDetails.minSize}${
+                                  childDetails.sizeUnit
+                                    ? ` ${childDetails.sizeUnit}`
+                                    : ""
+                                }`
+                              : "-"}
+                          </div>
+                          <div>
+                            <span className="font-semibold">Status:</span>{" "}
+                            {(childDetails.status || []).join(", ") || "-"}
+                          </div>
+                        </div>
+                      </div>
+                      {/* Amenities Section */}
+                      <div className="mb-8">
+                        <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
+                          Room Amenities
+                        </div>
+                        <div className="text-base">
+                          <span className="font-semibold">Amenities:</span>{" "}
+                          {(childDetails.amenities || []).join(", ") || "-"}
+                        </div>
+                      </div>
+                      {/* Description Section */}
+                      <div>
+                        <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
+                          Description
+                        </div>
+                        <div className="text-base text-left whitespace-pre-line">
+                          {childDetails.description || "-"}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-16 text-red-500">
+                      Failed to load property details.
                     </div>
-                    {/* Details Section */}
-                    <div className="mb-8">
-                      <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
-                        Room Details
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 text-base">
-                        <div>
-                          <span className="font-semibold">Builder:</span>{" "}
-                          {childDetails.builderName || "-"}
-                        </div>
-                        <div>
-                          <span className=" capitalize font-semibold">
-                            Type:
-                          </span>{" "}
-                          {childDetails.propertyType
-                            ? childDetails.propertyType
-                                .charAt(0)
-                                .toUpperCase() +
-                              childDetails.propertyType.slice(1)
-                            : "-"}
-                        </div>
-                        <div>
-                          <span className="font-semibold">Price:</span>{" "}
-                          {childDetails.price || childDetails.minPrice || "-"}
-                        </div>
-                        <div>
-                          <span className="font-semibold">Location:</span>{" "}
-                          {childDetails.location || "-"}
-                        </div>
-                        <div>
-                          <span className="font-semibold">Size:</span>{" "}
-                          {childDetails.minSize
-                            ? `${childDetails.minSize}${
-                                childDetails.sizeUnit
-                                  ? ` ${childDetails.sizeUnit}`
-                                  : "" 
-                              }`
-                            : "-"}
-                        </div>
-                        <div>
-                          <span className="font-semibold">Status:</span>{" "}
-                          {(childDetails.status || []).join(", ") || "-"}
-                        </div>
-                      </div>
-                    </div>
-                    {/* Amenities Section */}
-                    <div className="mb-8">
-                      <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
-                        Room Amenities
-                      </div>
-                      <div className="text-base">
-                        <span className="font-semibold">Amenities:</span>{" "}
-                        {(childDetails.amenities || []).join(", ") || "-"}
-                      </div>
-                    </div>
-                    {/* Description Section */}
-                    <div>
-                      <div className="font-semibold text-xl mb-3 text-left border-b pb-2">
-                        Description
-                      </div>
-                      <div className="text-base text-left whitespace-pre-line">
-                        {childDetails.description || "-"}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-16 text-red-500">
-                    Failed to load property details.
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -670,7 +637,7 @@ const PropertyDetails: React.FC = () => {
                     <li key={index} className="flex items-center">
                       <span className="mr-2">•</span> {projectHighlight}
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </div>
