@@ -333,10 +333,10 @@ const PropertyDetails: React.FC = () => {
                                 return;
                               }
 
-                              try {
-                                const result = await api.get(
-                                  `/public/property?parentId=${propertyId}&slug=${childKey}`,
-                                );
+    try {
+      const result = await api.get(
+        `api/v0/public/property?parentId=${propertyId}&slug=${childKey}`
+      );
 
                                 // ✅ ALWAYS normalize backend response
                                 const payload = result.data;

@@ -7,27 +7,45 @@ type Props = {
   }>;
 };
 
+// ✅ Safe server fetch
 async function getEmployeeData(id: string) {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/employee/${id}`,
-      { cache: "no-store" },
-    );
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v0/public/employee/${id}`;
 
-    if (!res.ok) return null;
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
 
-    return res.json();
+    const text = await res.text();
+
+    // 🔥 Handle non-JSON safely
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      console.error("Invalid JSON response:", text);
+      return null;
+    }
+
+    if (!res.ok || !data?.success) {
+      console.error("API Error:", data);
+      return null;
+    }
+
+    return data;
   } catch (error) {
     console.error("Employee fetch error:", error);
     return null;
   }
 }
 
+// ✅ Metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
 
   const response = await getEmployeeData(id);
   const user = response?.data;
+
   if (!user) {
     return {
       title: "Employee Not Found",
@@ -36,11 +54,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const profileImage =
-    user?.profileImage && user.profileImage.startsWith("http")
-      ? user.profileImage
+    user?.photo && user.photo.startsWith("http")
+      ? user.photo
       : "https://inrext.com/default-profile.png";
 
   return {
+    metadataBase: new URL("https://inrext.com"),
     title: `${user.name} | ${user.designation}`,
     description: `${user.name} - ${user.designation} at ${user.company}`,
 
@@ -52,8 +71,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [
         {
           url: profileImage,
-          width: 800,
-          height: 800,
+          width: 1200,
+          height: 630,
         },
       ],
       type: "profile",
@@ -68,10 +87,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+// ✅ Page
 export default async function Page({ params }: Props) {
   const { id } = await params;
 
   return <VisitingCardClient id={id} />;
 }
-
- 

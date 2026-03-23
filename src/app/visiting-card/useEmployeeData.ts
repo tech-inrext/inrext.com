@@ -14,59 +14,54 @@ interface User {
   specialization?: string;
 }
 
-interface UseEmployeeDataResult {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const useEmployeeData = (id: string): UseEmployeeDataResult => {
+const useEmployeeData = (id: string) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) {
+      setError("No employee ID provided");
+      setLoading(false);
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        if (!id) {
-          setError("No employee ID provided");
-          return;
-        }
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v0/public/employee/${id}`;
 
-        const apiUrl = `/api/v0/public/employee/${id}`;
-        const response = await axios.get(apiUrl, {
-          headers: {
-            'Cache-Control': 'no-cache',
-          },
-        });
+        const res = await axios.get(url);
 
-        if (response.data.success && response.data.data) {
-          setUser(response.data.data);
+        console.log("API RESPONSE:", res.data);
+
+        if (res.data?.success && res.data?.data) {
+          setUser(res.data.data);
         } else {
-          setError(response.data.error || "Employee not found");
+          setError("Employee not found");
         }
-      } catch (error: any) {
-        if (error.response) {
-          setError(`Server error: ${error.response.status} - ${error.response.data?.error || error.message}`);
-        } else if (error.request) {
-          setError("Unable to reach the server. Please check your internet connection.");
+      } catch (err: any) {
+        console.error("Fetch error:", err);
+
+        if (err.response) {
+          setError(
+            `Server error: ${err.response.status} - ${
+              err.response.data?.error || err.message
+            }`
+          );
+        } else if (err.request) {
+          setError("Unable to reach server");
         } else {
-          setError(error.message || "Failed to load employee data");
+          setError("Something went wrong");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchUserData();
-    } else {
-      setError("Please provide an employee ID in the URL");
-      setLoading(false);
-    }
+    fetchUserData();
   }, [id]);
 
   return { user, loading, error };

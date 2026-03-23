@@ -7,12 +7,71 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
 
-    const url = `${CRM_API}/v0/property?${searchParams.toString()}`;
+    const slug = searchParams.get("slug");
+    const withChildren = searchParams.get("withChildren") === "true";
+    const parentId = searchParams.get("parentId");
 
-    const crmRes = await fetch(url, {
-      method: "GET",
-      cache: "no-store"
-    });
+    if (slug) {
+      // Fetch single property by slug
+      const crmRes = await fetch(
+        `${CRM_PUBLIC_API}/api/v0/public/property?slug=${encodeURIComponent(slug)}&withChildren=${withChildren}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        }
+      );
+      if (!crmRes.ok) {
+        throw new Error("CRM API failed");
+      }
+      const crmData = await crmRes.json();
+      return NextResponse.json({
+        success: crmData.success !== false,
+        data: crmData.data || null,
+      });
+    }
+
+    if (parentId) {
+      // Fetch sub-properties by parentId
+      const crmRes = await fetch(
+        `${CRM_PUBLIC_API}/api/v0/public/property?parentId=${encodeURIComponent(parentId)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        }
+      );
+      if (!crmRes.ok) {
+        throw new Error("CRM API failed");
+      }
+      const crmData = await crmRes.json();
+      const properties = Array.isArray(crmData?.data) ? crmData.data : [];
+      return NextResponse.json({
+        success: true,
+        data: properties,
+      });
+    }
+
+    // List mode (default)
+    const category = searchParams.get("category") || "";
+    const featured = searchParams.get("featured") || "false";
+    const limit = searchParams.get("limit") || "20";
+     
+
+    const crmRes = await fetch(
+      `${CRM_PUBLIC_API}/api/v0/public/property?category=${category}&featured=${featured}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
 
     if (!crmRes.ok) {
       throw new Error("CRM API failed");

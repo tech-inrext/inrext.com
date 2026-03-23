@@ -42,7 +42,7 @@ export const propertyService = {
       const { category = "", featured = "false", limit = "12" } = params || {};
 
       const res = await api.get(
-        `/public/property?featured=${featured}&limit=${limit}`,
+        `/api/v0/public/property?featured=${featured}&limit=${limit}`,
       );
 
       const properties: Property[] = Array.isArray(res.data?.data)
@@ -100,7 +100,7 @@ export const propertyService = {
         "withChildren:",
         withChildren,
       );
-      const res = await api.get(`/public/property/${slug}`);
+      const res = await api.get(`api/v0/public/property/${slug}`);
 
       return res.data?.success ? res.data.data : null;
     } catch (error) {
@@ -112,7 +112,7 @@ export const propertyService = {
   // ✅ SUB-PROPERTIES PAGE (fetch child properties by parent ID)
   getSubProperties: async (parentId: string): Promise<any> => {
     try {
-      const res = await api.get(`/public/property?parentId=${parentId}`);
+      const res = await api.get(`/api/v0/public/property?parentId=${parentId}`);
       return res.data ?? { data: [] };
     } catch (error) {
       console.error("Sub-Properties Fetch Error:", error);
