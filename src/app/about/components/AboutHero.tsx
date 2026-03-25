@@ -6,7 +6,7 @@ import { useTheme } from "../../content/ThemeContext";
 
 const CounterBox = React.memo(({ value, label, isDarkMode }: { value: number; label: string; isDarkMode: boolean }) => (
   <p
-    className={`border rounded-xl lg:py-[2rem] py-[1rem] flex flex-col justify-center items-center ${
+    className={`border rounded-xl lg:py-8 py-4 flex flex-col justify-center items-center ${
       isDarkMode ? "text-white" : "text-[#5c727d]"
     }`}
   >
@@ -19,12 +19,19 @@ const AboutHero = () => {
   const { isDarkMode } = useTheme();
   const statsRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const [counters, setCounters] = useState({
     yearsExp: 0,
     happyCustomers: 0,
     guides: 0,
   });
+
+  // Target values for counters
+  const targetCounters = {
+    yearsExp: 12,
+    happyCustomers: 1000,
+    guides: 22,
+  };
 
   const animateCounters = useCallback(() => {
     let startTime: number | null = null;
@@ -34,12 +41,17 @@ const AboutHero = () => {
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / duration, 1);
       setCounters({
-        yearsExp: Math.floor(progress * 12),
-        happyCustomers: Math.floor(progress * 1000),
-        guides: Math.floor(progress * 22),
+        yearsExp: Math.floor(progress * targetCounters.yearsExp),
+        happyCustomers: Math.floor(progress * targetCounters.happyCustomers),
+        guides: Math.floor(progress * targetCounters.guides),
       });
-      if (progress < 1) animationRef.current = requestAnimationFrame(animate);
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        setCounters({ ...targetCounters });
+      }
     };
+    setCounters({ yearsExp: 0, happyCustomers: 0, guides: 0 }); // Always reset to 0 before animating
     animationRef.current = requestAnimationFrame(animate);
   }, []);
 
@@ -47,8 +59,8 @@ const AboutHero = () => {
     if (typeof window === "undefined") return;
     const observer = new window.IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
+        if (entry.isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
           animateCounters();
         }
       },
@@ -59,11 +71,11 @@ const AboutHero = () => {
       if (statsRef.current) observer.unobserve(statsRef.current);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [isVisible, animateCounters]);
+  }, [hasAnimated, animateCounters]);
 
   return (
     <div
-      className={`lg:h-[100vh] h-[100%] overflow-hidden flex justify-center items-center relative ${
+      className={`lg:h-screen h-full overflow-hidden flex justify-center items-center relative ${
         isDarkMode ? "bg-black" : "bg-blue-50"
       }`}
     >
@@ -73,13 +85,13 @@ const AboutHero = () => {
           isDarkMode ? "bg-black backdrop-blur-md" : "bg-blue-50"
         }`}
       >
-        <div className="grid lg:grid-cols-2    md:grid-cols-1 grid-cols-1 max-w-7xl mx-auto lg:px-6 px-5 py-[2rem] md:mt-[5rem] mt-[4.5rem] gap-14">
-          <div className="flex flex-col lg:px-10 justify-center rounded-4xl  bg-zinc-900  gap-y-[2rem] lg:pt-[3rem] lg:pb-[2rem]">
+        <div className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 max-w-7xl mx-auto lg:px-6 px-5 py-8 md:mt-20 mt-18 gap-14">
+          <div className="flex flex-col lg:px-10 justify-center rounded-4xl bg-zinc-900 gap-y-8 lg:pt-12 lg:pb-8">
             <h1 className="dm-serif-display text-blue-500 font-normal lg:text-[3.1rem] md:text-[2.1rem] text-[1.5rem] lg:leading-[2.8rem] md:leading-[1.8rem] leading-[1.4rem]">
               Real Estate, <br /> Reimagined <br /> For You.
             </h1>
             <p
-              className={`lg:text-[0.9rem] md:text-[0.9rem] text-[0.8rem] lg:leading-[1.25rem] leading-[1.1rem] ${
+              className={`lg:text-[0.9rem] md:text-[0.9rem] text-[0.8rem] lg:leading-5 leading-[1.1rem] ${
                 isDarkMode ? "text-white" : "text-gray-900"
               } leading-6`}
             >
