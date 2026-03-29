@@ -33,16 +33,27 @@ const VisitingCardContent: React.FC<VisitingCardContentProps> = ({ user }) => {
   const whatsappNumber = user?.altPhone || user?.phone;
 
   return (
-    <Box id="visiting-card">
+    <Box
+      id="visiting-card"
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        backgroundColor: "#0b0b0b",
+        overflow: "hidden",
+      }}
+    >
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "auto",
-          aspectRatio: "9 / 16",
+          width: { xs: "100%", sm: "390px" },
+          height: { xs: "100vh", sm: "640px" },
           position: "relative",
           overflow: "hidden",
           bgcolor: "#1a1a1a",
           color: "white",
+          borderRadius: { xs: 0, sm: "20px" },
+          flexShrink: 0,
         }}
       >
         {/* Background Image with Overlay */}
