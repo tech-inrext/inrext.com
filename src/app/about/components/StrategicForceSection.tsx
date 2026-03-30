@@ -10,6 +10,7 @@ import { FaTelegram } from "react-icons/fa";
 
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
+// Function to safely get image URL
 function getImageSrc(member: any) {
   if (member?.profileImages?.length) {
     const img = member.profileImages[0];
@@ -31,17 +32,16 @@ const StrategicForceSection = () => {
       try {
         const res = await fetchPillarsByCategory("the-strategic-force");
 
-        // ✅ ALWAYS SET ARRAY
-        if (Array.isArray(res)) {
-          setStrategicForce(res);
-        } else if (Array.isArray(res?.data)) {
-          setStrategicForce(res.data);
-        } else if (Array.isArray(res?.data?.data)) {
-          setStrategicForce(res.data.data);
-        } else {
-          console.error("Unexpected response:", res);
-          setStrategicForce([]);
-        }
+        // Normalize response to an array
+        let members: any[] = [];
+        if (Array.isArray(res)) members = res;
+        else if (Array.isArray(res?.data)) members = res.data;
+        else if (Array.isArray(res?.data?.data)) members = res.data.data;
+
+        // Filter only featured members
+        const featuredMembers = members.filter((member) => member.isFeatured);
+
+        setStrategicForce(featuredMembers);
       } catch (err) {
         console.error("Strategic Force fetch failed:", err);
         setStrategicForce([]);
@@ -50,7 +50,8 @@ const StrategicForceSection = () => {
 
     loadStrategicForce();
   }, []);
-const settings = {
+
+  const settings = {
     dots: false,
     infinite: true,
     slidesToShow: 2,
@@ -59,10 +60,9 @@ const settings = {
     speed: 500,
     autoplaySpeed: 2000,
     cssEase: "linear",
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 1, slidesToScroll: 1 } },
-    ],
+    responsive: [{ breakpoint: 1024, settings: { slidesToShow: 1, slidesToScroll: 1 } }],
   };
+
   return (
     <div
       className={`overflow-hidden ${
@@ -74,7 +74,7 @@ const settings = {
           The
           <span
             className={`cormorant-garamond ps-3 pe-3 ${
-              isDarkMode ? "text-white  backdrop-blur-md " : "text-blue-500"
+              isDarkMode ? "text-white" : "text-blue-500"
             }`}
           >
             Strategic
@@ -82,114 +82,110 @@ const settings = {
           Force
         </h1>
       </div>
-      <div className="max-w-7xl mx-auto lg:px-0 mb-[0rem]">
-        <div className="hidden lg:block">
-          <div className="flex flex-row justify-center gap-4 pb-[0rem]">
-            {strategicForce.map((member) => (
-              <div key={member._id} className="px-[0.6rem]">
-                <Link href={`/team/${encodeURIComponent(member.name)}`}>
-                  <div
-                    className={`h-full flex flex-col justify-center items-center px-5 rounded-xl group cursor-pointer ${
-                      isDarkMode
-                        ? "border border-gray-500/30"
-                        : "border border-blue-500/30"
-                    }`}
-                  >
-                    <div className="rounded-xl mt-5 w-[15rem] h-[12rem]">
-                      <Image
-                        className="w-full h-full object-contain bg-white rounded-xl"
-                        src={getImageSrc(member)}
-                        alt={member.name}
-                        width={240}
-                        height={192}
-                        priority
-                      />
-                    </div>
-                    <div className="flex flex-col py-5 w-full justify-center text-center items-center">
-                      <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
-                        {member.name}
-                      </h1>
-                      <p
-                        className={`capitalize text-[0.9rem] ${
-                          isDarkMode ? "text-white" : "text-gray-500"
-                        }`}
-                      >
-                        {member.position || member.designation}
-                      </p>
-                      <button
-                        type="button"
-                        className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
-                        tabIndex={-1}
-                        aria-label="Say Hello"
-                      >
-                        Say Hello👋{" "}
-                        <span className="text-[1.50rem]">
-                          <FaTelegram />
-                        </span>
-                      </button>
-                    </div>
+
+      {/* Desktop */}
+      <div className="max-w-7xl mx-auto lg:px-0 mb-[0rem] hidden lg:block">
+        <div className="flex flex-row justify-center gap-4 pb-[0rem]">
+          {strategicForce.map((member) => (
+            <div key={member._id} className="px-[0.6rem]">
+              <Link href={`/team/${encodeURIComponent(member.name)}`}>
+                <div
+                  className={`h-full flex flex-col justify-center items-center px-5 rounded-xl group cursor-pointer ${
+                    isDarkMode
+                      ? "border border-gray-500/30"
+                      : "border border-blue-500/30"
+                  }`}
+                >
+                  <div className="rounded-xl mt-5 w-[15rem] h-[12rem]">
+                    <Image
+                      className="w-full h-full object-contain bg-white rounded-xl"
+                      src={getImageSrc(member)}
+                      alt={member.name}
+                      width={240}
+                      height={192}
+                      priority
+                    />
                   </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="lg:hidden max-w-6xl mx-auto lg:px-0 mb-[0rem] overflow-x-auto">
-          <div className="slider-container">
-            <Slider
-              {...settings}
-              className="overflow-hidden pb-[0rem] lg:h-[26rem] h-[26rem]"
-            >
-              {strategicForce.map((member) => (
-                <div key={member._id} className="me-[1.6rem] px-[0.6rem]">
-                  <Link
-                    className="flex flex-col items-center justify-center"
-                    href={`/team/${encodeURIComponent(member.name)}`}
-                  >
-                    <div
-                      className={`h-full flex flex-col justify-center items-center px-12 lg:mx-0 mx-5 rounded-xl group cursor-pointer ${
-                        isDarkMode
-                          ? "border-2 border-blue-500"
-                          : "border-2 border-blue-500"
+                  <div className="flex flex-col py-5 w-full justify-center text-center items-center">
+                    <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
+                      {member.name}
+                    </h1>
+                    <p
+                      className={`capitalize text-[0.9rem] ${
+                        isDarkMode ? "text-white" : "text-gray-500"
                       }`}
                     >
-                      <div className="rounded-xl mt-5 w-[15rem] h-[12rem]">
-                        <Image
-                          className="w-full h-full object-contain bg-white rounded-xl"
-                          src={getImageSrc(member)}
-                          alt={member.name}
-                          width={240}
-                          height={192}
-                          priority
-                        />
-                      </div>
-                      <div className="flex flex-col py-5 w-full justify-center text-center items-center">
-                        <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
-                          {member.name}
-                        </h1>
-                        <p
-                          className={`capitalize text-[0.9rem] ${
-                            isDarkMode ? "text-white" : "text-gray-500"
-                          }`}
-                        >
-                          {member.position || member.designation}
-                        </p>
-                        <button
-                          type="button"
-                          className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
-                          tabIndex={-1}
-                          aria-label="Say Hello"
-                        >
-                          Say Hello👋
-                        </button>
-                      </div>
-                    </div>
-                  </Link>
+                      {member.position || member.designation}
+                    </p>
+                    <button
+                      type="button"
+                      className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
+                      tabIndex={-1}
+                      aria-label="Say Hello"
+                    >
+                      Say Hello👋{" "}
+                      <span className="text-[1.50rem]">
+                        <FaTelegram />
+                      </span>
+                    </button>
+                  </div>
                 </div>
-              ))}
-            </Slider>
-          </div>
+              </Link>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Mobile Slider */}
+      <div className="lg:hidden max-w-6xl mx-auto lg:px-0 mb-[0rem] overflow-x-auto">
+        <Slider
+          {...settings}
+          className="overflow-hidden pb-[0rem] lg:h-[26rem] h-[26rem]"
+        >
+          {strategicForce.map((member) => (
+            <div key={member._id} className="me-[1.6rem] px-[0.6rem]">
+              <Link
+                className="flex flex-col items-center justify-center"
+                href={`/team/${encodeURIComponent(member.name)}`}
+              >
+                <div
+                  className={`h-full flex flex-col justify-center items-center px-12 lg:mx-0 mx-5 rounded-xl group cursor-pointer border-2 border-blue-500`}
+                >
+                  <div className="rounded-xl mt-5 w-[15rem] h-[12rem]">
+                    <Image
+                      className="w-full h-full object-contain bg-white rounded-xl"
+                      src={getImageSrc(member)}
+                      alt={member.name}
+                      width={240}
+                      height={192}
+                      priority
+                    />
+                  </div>
+                  <div className="flex flex-col py-5 w-full justify-center text-center items-center">
+                    <h1 className="text-blue-500 font-semibold uppercase text-[1rem] leading-[1rem]">
+                      {member.name}
+                    </h1>
+                    <p
+                      className={`capitalize text-[0.9rem] ${
+                        isDarkMode ? "text-white" : "text-gray-500"
+                      }`}
+                    >
+                      {member.position || member.designation}
+                    </p>
+                    <button
+                      type="button"
+                      className="mt-5 italianno-regular w-full flex flex-row items-end justify-between text-white px-4 py-2 rounded-full bg-blue-500"
+                      tabIndex={-1}
+                      aria-label="Say Hello"
+                    >
+                      Say Hello👋
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </Slider>
       </div>
     </div>
   );

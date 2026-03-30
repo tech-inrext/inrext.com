@@ -13,6 +13,7 @@ const Slider = dynamic(() => import("react-slick"), { ssr: false });
 function getImageSrc(member: any) {
   if (Array.isArray(member?.profileImages) && member.profileImages.length > 0) {
     const img = member.profileImages[0];
+
     if (typeof img === "object" && img.url) return img.url;
     if (typeof img === "string") return img;
   }
@@ -26,31 +27,58 @@ function getImageSrc(member: any) {
 
 const GrowthNavigatorsSection = () => {
   const { isDarkMode } = useTheme();
+
   const [navigators, setNavigators] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    fetchPillarsByCategory("growth-navigators")
-      .then((res: any) => {
-        if (!isMounted) return;
+    const loadNavigators = async () => {
+      try {
+        const res = await fetchPillarsByCategory("growth-navigators");
 
-        const list = Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res)
-          ? res
-          : [];
+        let members: any[] = [];
 
-        setNavigators(list);
-      })
-      .catch((err) => {
+        // Normalize API response
+        if (Array.isArray(res)) {
+          members = res;
+        } else if (Array.isArray(res?.data)) {
+          members = res.data;
+        } else if (Array.isArray(res?.data?.data)) {
+          members = res.data.data;
+        }
+
+        // ✅ Only Featured Members
+        const featuredMembers = members.filter(
+          (member) => member?.isFeatured === true
+        );
+
+        // ✅ Remove duplicate members
+        const normalize = (str: string) =>
+          (str || "").trim().toLowerCase();
+
+        const uniqueMembers = featuredMembers.filter(
+          (v, i, a) =>
+            a.findIndex(
+              (x) =>
+                normalize(x.name) === normalize(v.name) &&
+                normalize(x.category) === normalize(v.category)
+            ) === i
+        );
+
+        if (isMounted) {
+          setNavigators(uniqueMembers);
+        }
+      } catch (err) {
         console.error("Failed to fetch Growth Navigators:", err);
-        setNavigators([]);
-      })
-      .finally(() => {
+        if (isMounted) setNavigators([]);
+      } finally {
         if (isMounted) setLoading(false);
-      });
+      }
+    };
+
+    loadNavigators();
 
     return () => {
       isMounted = false;
@@ -74,7 +102,7 @@ const GrowthNavigatorsSection = () => {
   };
 
   if (loading) return null;
-  if (!Array.isArray(navigators) || navigators.length === 0) return null;
+  if (!navigators.length) return null;
 
   return (
     <div
@@ -82,6 +110,7 @@ const GrowthNavigatorsSection = () => {
         isDarkMode ? "bg-black backdrop-blur-md" : "bg-blue-50"
       }`}
     >
+      {/* Heading */}
       <div className="max-w-7xl mx-auto px-6 pt-[5rem] pb-[3rem] flex flex-col justify-center items-center">
         <h1 className="dm-serif-display text-center text-blue-500 lg:text-[3.1rem] md:text-[2.1rem] text-[1.5rem] capitalize">
           Growth
@@ -95,6 +124,7 @@ const GrowthNavigatorsSection = () => {
         </h1>
       </div>
 
+      {/* Slider */}
       <div className="max-w-7xl mx-auto lg:px-0 mb-[2rem]">
         <Slider
           {...sliderSettings}
@@ -102,7 +132,7 @@ const GrowthNavigatorsSection = () => {
         >
           {navigators.map((member) => (
             <div key={member._id} className="px-[0.6rem]">
-                <Link href={`/team/${encodeURIComponent(member.name)}`}>
+              <Link href={`/team/${encodeURIComponent(member.name)}`}>
                 <div
                   className={`h-full flex flex-col justify-center items-center px-5 rounded-xl cursor-pointer ${
                     isDarkMode
@@ -110,6 +140,7 @@ const GrowthNavigatorsSection = () => {
                       : "border-2 border-blue-500"
                   }`}
                 >
+                  {/* Image */}
                   <div className="rounded-xl mt-5 w-[15rem] h-[12rem]">
                     <Image
                       className="w-full h-full object-contain bg-white rounded-xl"
@@ -121,10 +152,12 @@ const GrowthNavigatorsSection = () => {
                     />
                   </div>
 
+                  {/* Content */}
                   <div className="flex flex-col py-5 w-full text-center items-center">
                     <h1 className="text-blue-500 font-semibold uppercase text-[1rem]">
                       {member?.name}
                     </h1>
+
                     <p
                       className={`capitalize text-[0.9rem] ${
                         isDarkMode ? "text-white" : "text-gray-500"
