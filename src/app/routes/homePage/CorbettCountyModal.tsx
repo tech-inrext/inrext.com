@@ -13,9 +13,9 @@ type PopupConfig = {
 };
 
 const DEFAULT_CONFIG: PopupConfig = {
-  propertyName: "Corbett County",
-  location: "Jim Corbett National Park, Uttarakhand",
-  imageUrl: "/images/corbett_county_ad.png",
+  propertyName: "KW Delhi 6",
+  location: "KW Delhi 6 Mall, Raj Nagar Extension, Ghaziabad, Uttar Pradesh",
+  imageUrl: "/images/dholeraprime.jpg",
   buttonText: "GET CALL BACK",
   isActive: true,
 };
