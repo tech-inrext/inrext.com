@@ -9,10 +9,12 @@ import WhatMakeUs from './WhatMakeUs'
 import Testimonial from './Testimonial'
 import WorkWithUs from './WorkWithUs'
 import InrextVIP from '../InrextVIP/InrextVIP'
+import CorbettCountyModal from './CorbettCountyModal'
 
 const HomePage = () => {
   return (
     <div className=''>
+      <CorbettCountyModal />
       <Hero />
       <AboutHome/>
       <Brands/>

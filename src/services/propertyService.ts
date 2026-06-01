@@ -54,7 +54,7 @@ export const propertyService = {
         properties.map(async (property) => {
           try {
             const subRes = await api.get(
-              `/public/property?parentId=${property._id}`,
+              `/api/v0/public/property?parentId=${property._id}`,
             );
 
             const subs: Property[] = subRes?.data?.data || [];
