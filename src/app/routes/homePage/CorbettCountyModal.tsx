@@ -1,22 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import api from "../../../services/api";
 
 type PopupConfig = {
-  propertyName: string;
-  location: string;
   imageUrl: string;
   buttonText: string;
   isActive: boolean;
 };
 
 const DEFAULT_CONFIG: PopupConfig = {
-  propertyName: "KW Delhi 6",
-  location: "KW Delhi 6 Mall, Raj Nagar Extension, Ghaziabad, Uttar Pradesh",
-  imageUrl: "/images/dholeraprime.jpg",
-  buttonText: "GET CALL BACK",
+  imageUrl: "/images/corbett_county_ad.png",
+  buttonText: "Start My Property Search",
   isActive: true,
 };
 
@@ -24,6 +19,7 @@ const CorbettCountyModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [config, setConfig] = useState<PopupConfig | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -34,7 +30,7 @@ const CorbettCountyModal: React.FC = () => {
     const fetchPopupConfig = async () => {
       try {
         const response = await api.get("/api/v0/public/landing-popup");
-        // Handle both response shapes { success: true, data: { ... } } and direct response data
+        console.log(response);
         if (response.data && response.data.success && response.data.data) {
           const payload = response.data.data;
           if (Array.isArray(payload)) {
@@ -42,7 +38,7 @@ const CorbettCountyModal: React.FC = () => {
           } else {
             setConfig(payload);
           }
-        } else if (response.data && typeof response.data === "object" && "propertyName" in response.data) {
+        } else if (response.data && typeof response.data === "object" && "imageUrl" in response.data) {
           setConfig(response.data as PopupConfig);
         } else {
           setConfig(DEFAULT_CONFIG);
@@ -60,13 +56,11 @@ const CorbettCountyModal: React.FC = () => {
   useEffect(() => {
     if (loading || !config || !config.isActive) return;
 
-    // Check if popup was already shown in this session
     const shown = sessionStorage.getItem("corbett_county_modal_shown");
     if (!shown) {
-      // Small delay for better UX
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 1500);
+      }, 30000);
       return () => clearTimeout(timer);
     }
   }, [loading, config]);
@@ -76,18 +70,25 @@ const CorbettCountyModal: React.FC = () => {
     sessionStorage.setItem("corbett_county_modal_shown", "true");
   };
 
+  const toggleType = (type: string) => {
+    if (selectedTypes.includes(type)) {
+      setSelectedTypes(selectedTypes.filter((t) => t !== type));
+    } else {
+      setSelectedTypes([...selectedTypes, type]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone || !email || !config) return;
 
     setIsSubmitting(true);
     try {
-      // Construct WhatsApp URL with lead information
+      const propertyTypesStr = selectedTypes.length > 0 ? selectedTypes.join(", ") : "Any";
       const whatsappNumber = "918010178010";
-      const waMessage = `Hello! I am interested in the property *${config.propertyName}*.\n\n*Name*: ${name}\n*Email*: ${email}\n*Phone*: ${phone}`;
+      const waMessage = `Hello! I am looking for *${propertyTypesStr}* properties.\n\n*Name*: ${name}\n*Email*: ${email}\n*Phone*: ${phone}`;
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
-      // Open WhatsApp link in a new window/tab
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
       setSubmitted(true);
@@ -107,171 +108,243 @@ const CorbettCountyModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300">
       {/* Modal Container */}
-      <div className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col md:flex-row min-h-[400px]">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col md:flex-row min-h-[550px] md:min-h-[600px]">
         
-        {/* Close Button */}
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 z-50 flex items-center justify-center w-8 h-8 rounded-full border border-gray-400 bg-white text-gray-700 hover:text-black hover:border-black transition-colors"
-          aria-label="Close modal"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+        {/* Left Side: Advertising blue banner */}
+        <div className="w-full md:w-[55%] bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-950 p-6 md:p-8 flex flex-col justify-between text-white relative">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold leading-tight tracking-tight mb-6">
+              Find the Right Property, Not Just Another Listing
+            </h2>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3 text-sm font-medium text-blue-50">
+                <svg className="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Expert Property & Investment Consultation
+              </li>
+              <li className="flex items-center gap-3 text-sm font-medium text-blue-50">
+                <svg className="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Residential, Commercial & Plot Options
+              </li>
+              <li className="flex items-center gap-3 text-sm font-medium text-blue-50">
+                <svg className="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                Trusted by Thousands of Buyers & Investors
+              </li>
+            </ul>
+          </div>
 
-        {/* Left Side: Advertising Image */}
-        <div className="relative w-full md:w-1/2 min-h-[250px] md:min-h-[450px] bg-emerald-950 flex items-center justify-center">
-          <img
-            src={config.imageUrl}
-            alt={`${config.propertyName} Nature Awaits You`}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <div className="mt-8 space-y-4">
+            {/* Dynamic Villa Image Placeholder */}
+            <div className="relative w-full h-[150px] md:h-[180px] rounded-xl overflow-hidden shadow-inner border border-white/10">
+              <img
+                src={config.imageUrl}
+                alt="Property View"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Translucent overlay tagline card */}
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-3.5 text-center text-xs text-blue-100 font-medium">
+              Let our experts do the research while you focus on making the right decision.
+            </div>
+          </div>
         </div>
 
         {/* Right Side: Form */}
-        <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center bg-white text-gray-900">
+        <div className="w-full md:w-[55%] p-6 md:p-8 flex flex-col justify-center bg-white text-gray-900 relative">
+          
+          {/* Close Button */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 z-50 text-gray-400 hover:text-gray-700 transition-colors"
+            aria-label="Close modal"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
           {submitted ? (
-            <div className="text-center py-8">
+            <div className="text-center py-12">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-600 mb-4">
-                <svg
-                  className="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
               <p className="text-gray-600">
-                Your request has been received. We will get back to you shortly.
+                Opening WhatsApp and redirecting you to your search parameters...
               </p>
             </div>
           ) : (
             <div className="w-full">
               {/* Header */}
-              <div className="text-center md:text-left mb-6">
-                <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
-                  {config.propertyName}
-                </h2>
-                <div className="flex items-center justify-center md:justify-start gap-1.5 mt-2 text-gray-600">
-                  <svg
-                    className="w-5 h-5 text-green-600 flex-shrink-0"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-700">
-                    {config.location}
-                  </span>
-                </div>
+              <div className="mb-4">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+                  Tell Us What You're Looking For
+                </h3>
+                <p className="text-xs md:text-sm text-gray-500 mt-1 leading-relaxed">
+                  Share your requirements and receive personalized property recommendations from our real estate experts.
+                </p>
               </div>
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Full Name Input */}
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-green-600">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
+                
+                {/* Multi-select Grid */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-2">
+                    I am interested in
+                  </label>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {/* Residential */}
+                    <button
+                      type="button"
+                      onClick={() => toggleType("Residential")}
+                      className={`flex flex-col items-center justify-center py-2 px-3 border rounded-xl transition-all duration-200 ${
+                        selectedTypes.includes("Residential")
+                          ? "border-blue-600 bg-blue-50/50 text-blue-600 font-semibold"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  />
+                      <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      <span className="text-xs">Residential</span>
+                    </button>
+
+                    {/* Commercial */}
+                    <button
+                      type="button"
+                      onClick={() => toggleType("Commercial")}
+                      className={`flex flex-col items-center justify-center py-2 px-3 border rounded-xl transition-all duration-200 ${
+                        selectedTypes.includes("Commercial")
+                          ? "border-blue-600 bg-blue-50/50 text-blue-600 font-semibold"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <span className="text-xs">Commercial</span>
+                    </button>
+
+                    {/* Plot/Land */}
+                    <button
+                      type="button"
+                      onClick={() => toggleType("Plot/Land")}
+                      className={`flex flex-col items-center justify-center py-2 px-3 border rounded-xl transition-all duration-200 ${
+                        selectedTypes.includes("Plot/Land")
+                          ? "border-blue-600 bg-blue-50/50 text-blue-600 font-semibold"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="text-xs">Plot/Land</span>
+                    </button>
+
+                    {/* Villas/Resorts */}
+                    <button
+                      type="button"
+                      onClick={() => toggleType("Villas/Resorts")}
+                      className={`flex flex-col items-center justify-center py-2 px-3 border rounded-xl transition-all duration-200 ${
+                        selectedTypes.includes("Villas/Resorts")
+                          ? "border-blue-600 bg-blue-50/50 text-blue-600 font-semibold"
+                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                      }`}
+                    >
+                      <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 21V13h6v8" />
+                      </svg>
+                      <span className="text-xs">Villas/Resorts</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Full Name Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your full name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 bg-white text-gray-900 transition-all placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
 
                 {/* Email Address Input */}
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-green-600">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                  </span>
-                  <input
-                    type="email"
-                    required
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  />
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </span>
+                    <input
+                      type="email"
+                      required
+                      placeholder="your.email@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 bg-white text-gray-900 transition-all placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
 
-                {/* Phone/Mobile Input */}
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-green-600">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                    </svg>
-                  </span>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Phone/Mobile"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                  />
+                {/* Phone Number Input */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                    </span>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+91 XXXXX XXXXX"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 bg-white text-gray-900 transition-all placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#10b981] hover:bg-[#059669] text-white font-bold py-3 px-4 rounded-lg uppercase tracking-wider transition-colors duration-200 disabled:opacity-75 cursor-pointer shadow-md hover:shadow-lg"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  {isSubmitting ? "Submitting..." : config.buttonText}
+                  {isSubmitting ? "Processing..." : config.buttonText}
                 </button>
+
+                {/* Trust Seal */}
+                <div className="flex items-center justify-center gap-1.5 text-[10px] md:text-xs text-gray-500 mt-2">
+                  <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Your information remains completely confidential.
+                </div>
               </form>
             </div>
           )}
